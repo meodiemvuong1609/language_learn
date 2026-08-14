@@ -1,3 +1,7 @@
+> **ARCHIVED / SUPERSEDED (2026-08-15).** This checklist is stale — it lists already-completed work (RegisterView, all web pages, ProtectedRoute, etc.) as pending.
+> The canonical, code-verified sources are [`../../PROJECT_STATUS.md`](../../PROJECT_STATUS.md) and [`../../TASK_QUEUE.md`](../../TASK_QUEUE.md).
+> Kept for historical context only.
+
 # ✅ Task Checklist - LanguageLearn
 
 Checklist các task đã hoàn thành và cần thực hiện trong dự án LanguageLearn.
