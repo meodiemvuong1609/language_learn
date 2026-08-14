@@ -20,11 +20,14 @@ LanguageLearn/
 │   ├── account/           # Auth: register, login, forgot/reset password
 │   ├── common/            # Level, Topic, Progress, Preference
 │   ├── vocabulary/        # Từ vựng: CRUD, by_topic, by_level, SRS review
+│   ├── flashcard/         # Flashcard decks, cards, SRS progress
 │   ├── listening/         # Nghe: audio lessons, exercises, progress
 │   ├── speaking/          # Nói: lessons, exercises, attempts, progress
 │   ├── sentence/          # Ngữ pháp: sentence structures, vocabulary items
 │   ├── reading/           # Đọc hiểu: lessons, paragraphs, comprehension
 │   ├── question/          # Quiz: quizzes, questions, attempts
+│   ├── lesson/            # ⚠️ DEAD: model exists but no view/route (see TASK_QUEUE.md BE-05)
+│   ├── general/           # ⚠️ Leftover utils (convert_response used); rest is dead (SEC-01)
 │   ├── be/                # Django config: settings, urls, wsgi
 │   ├── b2_storage/        # Backblaze B2 file storage
 │   ├── docs/              # Design & coding standards
@@ -37,20 +40,24 @@ LanguageLearn/
 │   ├── services/
 │   └── store/
 │
-└── docs/                  # Root-level documentation
-    ├── VERIFICATION.md    # End-to-end verification checklist BE+FE
+├── PROJECT_STATUS.md      # ⭐ Single source of truth: current state (code-verified)
+├── TASK_QUEUE.md          # ⭐ Prioritized task queue (P0–P3)
+└── docs/                  # Root-level reference documentation
+    ├── README.md          # Docs index
     ├── DESIGN_SYSTEM.md   # UI/UX design tokens
     ├── CODING_STANDARDS.md # Code conventions
-    └── TASK_CHECKLIST.md  # Task tracking
+    └── archive/           # Superseded planning docs (historical)
 ```
+
+> **Note:** the frontend uses the Next.js **Pages Router** (`src/pages/`), not the App Router. Auth is **DRF Token**, not JWT. See [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) for the verified architecture.
 
 ## 📊 Tech Stack
 
 | Layer | Technology |
 |--------|-----------|
-| **Backend** | Django 5.0, DRF, PostgreSQL, B2 Storage, JWT/Tokken Auth |
-| **Frontend Web** | Next.js 14, React 18, Tailwind CSS, Redux Toolkit, Axios |
-| **Mobile** | React Native / Expo |
+| **Backend** | Django 5.0, DRF 3.14, PostgreSQL, B2 Storage, **DRF Token Auth** (not JWT) |
+| **Frontend Web** | Next.js 15 (**Pages Router**), React 19 RC, Tailwind CSS v3, Redux Toolkit, Axios |
+| **Mobile** | Expo SDK 53 / React Native 0.79, Redux Toolkit, Axios, NativeWind (no React Query) |
 | **Testing** | Django Test, APIClient, Coverage |
 | **Docs** | Swagger/OpenAPI, Markdown |
 | **DevOps** | Docker, Docker Compose |
@@ -67,7 +74,7 @@ cp .env.example .env
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver          # http://localhost:8000
-python manage.py test --verbosity=2 # Chạy 150+ test cases
+python manage.py test --verbosity=2 # ~105 test methods across 8 apps (needs Postgres)
 ```
 
 ### Frontend Web (`languagelearnfe/`)
@@ -75,7 +82,7 @@ python manage.py test --verbosity=2 # Chạy 150+ test cases
 ```bash
 cd languagelearnfe
 npm install
-npm run dev                         # http://localhost:3001
+npm run dev                         # http://localhost:3000 (Next.js default)
 ```
 
 ## 📄 Tính năng chính
@@ -154,14 +161,17 @@ npm run dev                         # http://localhost:3001
 /api/quizzes/            # Quizzes
 /api/questions/          # Quiz questions
 /api/quiz-attempts/      # Quiz history
-/api/progress/           # Overall progress
+/api/flashcard-decks/    # Flashcard decks (+ add_cards, my_decks, public_decks, favorites)
+/api/flashcards/         # Flashcards
+/api/flashcard-progress/ # Flashcard SRS progress (+ due_for_review, statistics, review)
+/api/progress/           # Overall progress (+ dashboard-stats)
 /api/preferences/        # User preferences
 ```
 
 ## 🧪 Testing
 
-- **150+ test cases** across 8 Django apps
-- Coverage targets: Account ≥90%, others ≥80%
+- **~105 test methods** across 8 Django apps (backend). Requires a running PostgreSQL.
+- No `flashcard` tests yet; frontend/mobile have no test frameworks configured (see `TASK_QUEUE.md`).
 - Run: `python manage.py test --verbosity=2`
 - See `languagelearnbe/readme_test.md` for full testing guide
 
@@ -169,23 +179,27 @@ npm run dev                         # http://localhost:3001
 
 | File | Mô tả |
 |------|-------|
-| `docs/VERIFICATION.md` | Checklist kiểm thử toàn diện BE + FE |
-| `languagelearnfe/README_FRONTEND.md` | Frontend: setup + 15-section feature checklist |
-| `languagelearnbe/readme_test.md` | Backend: test guide, coverage, per-app commands |
-| `languagelearnbe/README.md` | Backend API docs, endpoints table |
+| `PROJECT_STATUS.md` | ⭐ Single source of truth — current state, code-verified |
+| `TASK_QUEUE.md` | ⭐ Prioritized task queue (P0–P3) |
+| `docs/README.md` | Documentation index |
 | `docs/DESIGN_SYSTEM.md` | UI/UX design tokens |
 | `docs/CODING_STANDARDS.md` | Code conventions |
-| `docs/TASK_CHECKLIST.md` | Feature tracking |
+| `languagelearnbe/readme_test.md` | Backend: test guide, coverage, per-app commands |
+| `languagelearnbe/README.md` | Backend API docs, endpoints table |
+| `languagelearnfe/README_FRONTEND.md` | Frontend setup/verify (note: contains some drift) |
 
-## 🗺️ Frontend Routes (15 pages)
+## 🗺️ Frontend Routes (22 route files, Pages Router)
 
 ```
-/                    Home (landing)
+/home                Home (landing)     ← NOTE: "/" has no page → 404 (see TASK_QUEUE FE-05)
 /login               Login
 /register            Register
 /dashboard           Dashboard (protected)
 /vocabulary          Vocabulary list (protected)
-/vocabulary/review   Flashcard SRS review (protected)
+/vocabulary/review   Vocabulary SRS review (protected)
+/flashcard           Flashcard decks (protected)
+/flashcard/deck/[id] Deck detail (protected)
+/flashcard/study/[id] Study session (protected)
 /listening           Listening catalog (protected)
 /listening/[id]      Audio player + exercises (protected)
 /speaking            Speaking catalog (protected)
@@ -199,6 +213,8 @@ npm run dev                         # http://localhost:3001
 /profile             User profile (protected)
 *                    404 Not Found
 ```
+
+> Protected routes are guarded by `ProtectedRoute` via each page's `getLayout`. (This guard was fixed in Autonomous Loop #1 — previously it never ran.)
 
 ## ⚙️ Environment Variables
 
@@ -225,19 +241,15 @@ cd languagelearnbe
 docker-compose up --build
 ```
 
-## 🔮 Next Steps (Roadmap)
+## 🔮 Roadmap
 
-- [ ] Real AI scoring for speaking (Whisper / Google Speech API)
-- [ ] Custom audio player with waveform
-- [ ] WebSocket notifications
-- [ ] Vocabulary detail page + favorites
-- [ ] Toast notifications (replace alert)
-- [ ] Dark mode
-- [ ] i18n multi-language support
-- [ ] Progressive Web App (PWA) support
-- [ ] Mobile app polish (React Native features)
-- [ ] Email backend configuration (SMTP)
-- [ ] File upload presigned URLs (B2)
+The prioritized, code-verified roadmap now lives in [`TASK_QUEUE.md`](./TASK_QUEUE.md) (P0–P3) and current state in [`PROJECT_STATUS.md`](./PROJECT_STATUS.md). Highlights of remaining work:
+
+- **P1** Backend: fix `created_by`/`updated_by` signal, DRF↔Django version alignment, runnable Docker
+- **P1** Mobile: fix NativeWind color palette + setup
+- **P2** Mobile: wire mock screens to real APIs; register missing routes
+- **P2** Add test frameworks (FE/mobile) + CI/CD
+- **P3** Dark mode, i18n, PWA, real speaking AI scoring, replace `alert()` with toasts
 
 ## 👥 Team
 

@@ -1,3 +1,7 @@
+> **ARCHIVED / SUPERSEDED (2026-08-15).** This document is a stale snapshot and no longer reflects the code.
+> The canonical, code-verified sources are [`../../PROJECT_STATUS.md`](../../PROJECT_STATUS.md) and [`../../TASK_QUEUE.md`](../../TASK_QUEUE.md).
+> Kept for historical context only.
+
 # 🚀 Improvements & Recommendations - LanguageLearn
 
 Đề xuất nâng cấp và cải tiến cho dự án LanguageLearn, phân loại theo mức độ ưu tiên.
