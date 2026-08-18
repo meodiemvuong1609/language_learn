@@ -8,8 +8,8 @@ from django.conf import settings
 class AudioLesson(BaseModel):
     title = models.CharField(max_length=200)
     description = models.TextField()
-    audio = models.FileField(upload_to='listening/audio/')
-    transcript = models.TextField()
+    audio = models.FileField(upload_to='listening/audio/', blank=True)
+    transcript = models.TextField(blank=True)
     translation = models.TextField(blank=True)
     duration = models.DurationField()
     level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True)

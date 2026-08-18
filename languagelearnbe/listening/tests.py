@@ -42,12 +42,20 @@ class AudioLessonViewSetTest(TestCase):
     def test_create_lesson_as_user(self):
         self.client.force_authenticate(user=self.user)
         data = {
-            'title': 'New Lesson', 'description': 'Desc',
-            'duration': '00:01:00', 'level': self.level.id, 'order': 2,
-            'topics': [self.topic.id]
+            'title': 'New Lesson',
+            'description': 'Desc',
+            'transcript': 'Hello',
+            'duration': '00:01:00',
+            'level': self.level.id,
+            'order': 2,
+            'topics': [self.topic.id],
         }
         response = self.client.post('/api/audio-lessons/', data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED,
+            response.data,
+        )
 
     def test_filter_by_level(self):
         response = self.client.get(f'/api/audio-lessons/?level={self.level.id}')
