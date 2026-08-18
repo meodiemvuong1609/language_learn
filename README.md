@@ -46,6 +46,7 @@ LanguageLearn/
     ├── README.md          # Docs index
     ├── DESIGN_SYSTEM.md   # UI/UX design tokens
     ├── CODING_STANDARDS.md # Code conventions
+    ├── DEVELOPMENT_PLAN.md # Kế hoạch: data, tính năng lớn, pha
     └── archive/           # Superseded planning docs (historical)
 ```
 
@@ -55,7 +56,7 @@ LanguageLearn/
 
 | Layer | Technology |
 |--------|-----------|
-| **Backend** | Django 5.0, DRF 3.14, PostgreSQL, B2 Storage, **DRF Token Auth** (not JWT) |
+| **Backend** | Django 5.0, DRF 3.15.2, PostgreSQL, B2 Storage, **DRF Token Auth** (not JWT) |
 | **Frontend Web** | Next.js 15 (**Pages Router**), React 19 RC, Tailwind CSS v3, Redux Toolkit, Axios |
 | **Mobile** | Expo SDK 53 / React Native 0.79, Redux Toolkit, Axios, NativeWind (no React Query) |
 | **Testing** | Django Test, APIClient, Coverage |
@@ -89,7 +90,7 @@ npm run dev                         # http://localhost:3000 (Next.js default)
 
 ### 🔐 Auth & User
 - Đăng ký / Đăng nhập / Quên mật khẩu / Reset mật khẩu
-- JWT Token authentication
+- DRF Token authentication
 - Profile management (edit full_name, email, phone, birthday)
 - User preferences tracking
 
@@ -170,8 +171,7 @@ npm run dev                         # http://localhost:3000 (Next.js default)
 
 ## 🧪 Testing
 
-- **~105 test methods** across 8 Django apps (backend). Requires a running PostgreSQL.
-- No `flashcard` tests yet; frontend/mobile have no test frameworks configured (see `TASK_QUEUE.md`).
+- **~105+ test methods** plus learning-loop tests (`common/tests_learning.py`). Frontend/mobile have smoke tests + CI.
 - Run: `python manage.py test --verbosity=2`
 - See `languagelearnbe/readme_test.md` for full testing guide
 
@@ -181,6 +181,7 @@ npm run dev                         # http://localhost:3000 (Next.js default)
 |------|-------|
 | `PROJECT_STATUS.md` | ⭐ Single source of truth — current state, code-verified |
 | `TASK_QUEUE.md` | ⭐ Prioritized task queue (P0–P3) |
+| `docs/DEVELOPMENT_PLAN.md` | ⭐ Kế hoạch phát triển: đã có, nguồn data, tính năng lớn, pha A–C |
 | `docs/README.md` | Documentation index |
 | `docs/DESIGN_SYSTEM.md` | UI/UX design tokens |
 | `docs/CODING_STANDARDS.md` | Code conventions |
@@ -243,13 +244,7 @@ docker-compose up --build
 
 ## 🔮 Roadmap
 
-The prioritized, code-verified roadmap now lives in [`TASK_QUEUE.md`](./TASK_QUEUE.md) (P0–P3) and current state in [`PROJECT_STATUS.md`](./PROJECT_STATUS.md). Highlights of remaining work:
-
-- **P1** Backend: fix `created_by`/`updated_by` signal, DRF↔Django version alignment, runnable Docker
-- **P1** Mobile: fix NativeWind color palette + setup
-- **P2** Mobile: wire mock screens to real APIs; register missing routes
-- **P2** Add test frameworks (FE/mobile) + CI/CD
-- **P3** Dark mode, i18n, PWA, real speaking AI scoring, replace `alert()` with toasts
+The prioritized, code-verified roadmap now lives in [`TASK_QUEUE.md`](./TASK_QUEUE.md). MVP loop: vocab/flashcard SRS → listening/reading server-grade → quiz retake → sentence fill-in → speaking self-score → dashboard on web and mobile.
 
 ## 👥 Team
 

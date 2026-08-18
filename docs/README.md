@@ -16,6 +16,7 @@ This folder holds cross-cutting reference docs. The **canonical status & task do
 |---|---|
 | [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) | UI/UX design tokens (colors, type, spacing, components). |
 | [`CODING_STANDARDS.md`](./CODING_STANDARDS.md) | Code conventions (Python/Django, React, git, security, testing). |
+| [`DEVELOPMENT_PLAN.md`](./DEVELOPMENT_PLAN.md) | **Kế hoạch phát triển:** đã có / nguồn dữ liệu / tính năng lớn / pha A–C. |
 | [`archive/`](./archive) | Superseded planning docs, kept for history only. Do not treat as current. |
 
 ## Per-submodule docs

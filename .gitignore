@@ -2,7 +2,8 @@
 
 # dependencies
 node_modules/
-fe/node_modules/
+languagelearn/node_modules/
+languagelearnfe/node_modules/
 .pnp
 .pnp.js
 .yarn/install-state.gz
@@ -12,9 +13,9 @@ fe/node_modules/
 
 # next.js
 .next/
-fe/.next/
+languagelearnfe/.next/
 out/
-fe/out/
+languagelearnfe/out/
 
 # production
 /build
@@ -29,8 +30,8 @@ __pycache__/
 *.sqlite3
 
 # django
-/be/db.sqlite3
-/be/.venv/
+languagelearnbe/db.sqlite3
+languagelearnbe/.venv/
 
 # debug
 npm-debug.log*
@@ -42,8 +43,11 @@ yarn-error.log*
 
 # vercel
 .vercel
-fe/.vercel
+languagelearnfe/.vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# docker
+languagelearnbe/.env
