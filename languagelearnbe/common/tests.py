@@ -4,13 +4,32 @@ from django.contrib.auth import get_user_model
 from django.db.models.signals import pre_save
 from rest_framework.test import APIClient
 from rest_framework import status
+import os
 
 from account.middleware import _thread_locals
 from common.models import Level, Topic
 from common.signals import set_created_updated_by
 from vocabulary.models import Vocabulary
 
+from be.settings import _csv_env, _origin_variants
+
 Account = get_user_model()
+
+
+class EnvCorsParseTest(SimpleTestCase):
+    def test_strips_quotes_and_trailing_slash(self):
+        os.environ["ENV_ALLOWED_CORS_TEST"] = "'https://ngocthaoielts.online/',http://localhost:3000"
+        self.assertEqual(
+            _csv_env("ENV_ALLOWED_CORS_TEST"),
+            ["https://ngocthaoielts.online", "http://localhost:3000"],
+        )
+        os.environ.pop("ENV_ALLOWED_CORS_TEST", None)
+
+    def test_www_variant(self):
+        self.assertEqual(
+            _origin_variants("https://ngocthaoielts.online"),
+            ["https://ngocthaoielts.online", "https://www.ngocthaoielts.online"],
+        )
 
 
 class CreatedUpdatedBySignalTest(SimpleTestCase):
