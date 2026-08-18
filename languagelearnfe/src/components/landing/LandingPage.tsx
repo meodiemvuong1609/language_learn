@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { type FormEvent, useEffect, useState } from 'react';
-import { pick, site, type Locale } from '@/content/site';
+import { pick, site, SITE_URL, type Locale } from '@/content/site';
 import CueCard from './CueCard';
 import { LocaleProvider, useLocale } from './LocaleContext';
 
@@ -324,10 +324,14 @@ function Seo() {
   const { locale } = useLocale();
   const seo = site.seo[locale];
   const persona = site.persona[locale];
+  const pageUrl = `${SITE_URL}/`;
+  const shareImage = `${SITE_URL}${site.og.image}`;
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: persona.name,
+    url: pageUrl,
+    image: shareImage,
     jobTitle: persona.role,
     knowsLanguage: ['vi', 'en'],
     address: { '@type': 'PostalAddress', addressLocality: persona.location, addressCountry: 'VN' },
@@ -338,16 +342,27 @@ function Seo() {
   return (
     <Head>
       <title>{seo.title}</title>
+      <link rel="canonical" href={pageUrl} />
       <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      <meta property="og:image" content={site.proofImage.src} />
       <meta name="description" content={seo.description} />
+      <meta property="og:site_name" content={site.brand} />
       <meta property="og:title" content={seo.title} />
       <meta property="og:description" content={seo.description} />
       <meta property="og:type" content="website" />
+      <meta property="og:url" content={pageUrl} />
       <meta property="og:locale" content={seo.ogLocale} />
       <meta property="og:locale:alternate" content={locale === 'vi' ? 'en_US' : 'vi_VN'} />
+      <meta property="og:image" content={shareImage} />
+      <meta property="og:image:secure_url" content={shareImage} />
+      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:width" content={site.og.imageWidth} />
+      <meta property="og:image:height" content={site.og.imageHeight} />
+      <meta property="og:image:alt" content={site.og.imageAlt[locale]} />
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={seo.title} />
+      <meta name="twitter:description" content={seo.description} />
+      <meta name="twitter:image" content={shareImage} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </Head>
   );
