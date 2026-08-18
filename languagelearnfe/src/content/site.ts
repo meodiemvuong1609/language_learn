@@ -22,6 +22,11 @@ export type FaqItem = {
 
 export const locales: Locale[] = ['vi', 'en'];
 
+/** Canonical site URL for Open Graph / crawlers (must be absolute). */
+export const SITE_URL = (
+  process.env['NEXT_PUBLIC_SITE_URL'] || 'https://ngocthaoielts.online'
+).replace(/\/$/, '');
+
 export const site = {
   brand: 'Ngọc Thảo IELTS',
   band: '8.0',
@@ -58,6 +63,15 @@ export const site = {
       ogLocale: 'en_US',
     },
   } satisfies I18n<{ title: string; description: string; ogLocale: string }>,
+  og: {
+    image: '/og-image.png',
+    imageWidth: '1200',
+    imageHeight: '630',
+    imageAlt: {
+      vi: 'Ngọc Thảo IELTS — giáo viên IELTS Academic 8.0, dạy online từ Thanh Hóa',
+      en: 'Ngoc Thao IELTS — IELTS Academic 8.0 trainer, taught online from Thanh Hoa',
+    },
+  },
   nav: {
     vi: { about: 'Về cô', programs: 'Chương trình', method: 'Phương pháp', faq: 'Câu hỏi', contact: 'Liên hệ', login: 'Đăng nhập' },
     en: { about: 'About', programs: 'Programs', method: 'Method', faq: 'FAQ', contact: 'Contact', login: 'Sign in' },
