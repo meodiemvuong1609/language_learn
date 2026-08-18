@@ -2,7 +2,8 @@ django==5.0
 gunicorn==21.2.0
 python-dotenv==1.0.1
 psycopg2-binary==2.9.9
-drf-yasg==1.21.7
+setuptools>=70,<82
+drf-yasg==1.21.15
 Pillow==10.3.0
 django-cors-headers==4.3.1
 django-filter==23.5
