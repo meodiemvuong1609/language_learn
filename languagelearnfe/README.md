@@ -111,12 +111,16 @@ npm install
 ```
 
 ### Bước 2: Environment variables
-File `.env.local`:
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
+```bash
+cp .env.example .env.local
 ```
 
-> **Lưu ý**: Next.js chỉ expose biến có prefix `NEXT_PUBLIC_` ra client.
+File `.env.example` / `.env.local`:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+```
+
+> **Lưu ý**: Next.js chỉ expose biến có prefix `NEXT_PUBLIC_` ra client. Production: ghi `languagelearnfe/.env.local` trên server rồi `yarn build`.
 
 ### Bước 3: Chạy dev server
 ```bash

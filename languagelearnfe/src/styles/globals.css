@@ -625,6 +625,9 @@ textarea.input:focus {
   color: var(--graphite);
   font-family: Figtree, system-ui, sans-serif;
   min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  overflow-x: clip;
 }
 
 html[data-theme='dark'] .ll-landing {
@@ -654,8 +657,11 @@ html[data-theme='dark'] .ll-landing {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   padding: 14px 6vw;
+  padding-top: max(14px, env(safe-area-inset-top));
+  padding-left: max(16px, env(safe-area-inset-left), 6vw);
+  padding-right: max(16px, env(safe-area-inset-right), 6vw);
   background: rgba(244, 239, 230, 0.88);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
@@ -665,11 +671,18 @@ html[data-theme='dark'] .ll-landing {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
   font-family: Literata, Georgia, serif;
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: clamp(0.95rem, 3.6vw, 1.15rem);
   text-decoration: none;
   color: var(--ink);
+}
+
+.ll-logo-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ll-logo-mark {
@@ -703,9 +716,16 @@ html[data-theme='dark'] .ll-landing {
   display: none;
   background: transparent;
   border: 1px solid var(--line);
+  min-height: 44px;
+  min-width: 44px;
   padding: 8px 12px;
   font-family: inherit;
   cursor: pointer;
+  touch-action: manipulation;
+}
+
+.ll-nav-scrim {
+  display: none;
 }
 
 .ll-switch {
@@ -736,6 +756,8 @@ html[data-theme='dark'] .ll-landing {
   gap: 48px;
   align-items: center;
   padding: 56px 6vw 40px;
+  padding-left: max(16px, env(safe-area-inset-left), 6vw);
+  padding-right: max(16px, env(safe-area-inset-right), 6vw);
 }
 
 .ll-eyebrow {
@@ -954,6 +976,8 @@ html[data-theme='dark'] .ll-landing {
 
 .ll-section {
   padding: 72px 6vw;
+  padding-left: max(16px, env(safe-area-inset-left), 6vw);
+  padding-right: max(16px, env(safe-area-inset-right), 6vw);
 }
 
 .ll-section-head h2 {
@@ -973,15 +997,42 @@ html[data-theme='dark'] .ll-landing {
 
 .ll-about {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
+  grid-template-columns: 1.05fr 0.95fr;
   gap: 40px;
+  align-items: start;
   margin-top: 28px;
 }
 
 .ll-bio {
   font-size: 1.08rem;
   line-height: 1.7;
+  margin: 0 0 20px;
+}
+
+.ll-trf {
   margin: 0;
+  background: #fffdf8;
+  border: 1px solid var(--line);
+  padding: 10px 10px 12px;
+  box-shadow: 6px 8px 0 var(--ink);
+  transform: rotate(1.2deg);
+}
+
+.ll-trf img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+}
+
+.ll-trf figcaption {
+  margin-top: 10px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  text-align: center;
 }
 
 .ll-creds {
@@ -1116,8 +1167,24 @@ html[data-theme='dark'] .ll-landing {
 
 .ll-contact-card .ll-lead,
 .ll-contact-card .ll-meta,
-.ll-contact-card .ll-note {
+.ll-contact-card .ll-note,
+.ll-contact-card .ll-social {
   color: rgba(244, 239, 230, 0.72);
+}
+
+.ll-social {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 0;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.82rem;
+}
+
+.ll-social a {
+  color: #fff8f6;
+  text-underline-offset: 3px;
 }
 
 .ll-form {
@@ -1167,11 +1234,21 @@ html[data-theme='dark'] .ll-landing {
 .ll-footer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 12px;
   padding: 24px 6vw 40px;
+  padding-left: max(16px, env(safe-area-inset-left), 6vw);
+  padding-right: max(16px, env(safe-area-inset-right), 6vw);
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--line);
   font-size: 0.82rem;
   color: var(--muted);
+}
+
+.ll-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
 }
 
 .ll-reveal {
@@ -1211,6 +1288,20 @@ html[data-theme='dark'] .ll-landing {
 
   .ll-menu {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 42;
+  }
+
+  .ll-nav-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    border: 0;
+    background: rgba(21, 34, 56, 0.28);
+    cursor: pointer;
   }
 
   .ll-nav nav {
@@ -1219,22 +1310,134 @@ html[data-theme='dark'] .ll-landing {
     top: 100%;
     left: 0;
     right: 0;
+    z-index: 40;
     flex-direction: column;
-    align-items: flex-start;
-    padding: 16px 6vw 20px;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px 6vw 20px;
+    padding-left: max(16px, env(safe-area-inset-left), 6vw);
+    padding-right: max(16px, env(safe-area-inset-right), 6vw);
     background: var(--paper);
     border-bottom: 1px solid var(--line);
+    box-shadow: 0 16px 32px rgba(21, 34, 56, 0.12);
   }
 
   .ll-nav nav.is-open {
     display: flex;
   }
 
+  .ll-nav nav a {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .ll-nav nav .ll-switch {
+    margin-top: 12px;
+    align-self: flex-start;
+  }
+
   .ll-cue {
     transform: none;
     animation: none;
-    max-width: 360px;
+    max-width: min(360px, 100%);
   }
+
+  .ll-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .ll-hero {
+    gap: 28px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+
+  .ll-hero h1 {
+    font-size: clamp(1.7rem, 8.2vw, 2.25rem);
+    line-height: 1.2;
+  }
+
+  .ll-lead,
+  .ll-bio {
+    font-size: 1rem;
+  }
+
+  .ll-hero-actions {
+    margin: 22px 0 24px;
+  }
+
+  .ll-hero-actions .ll-btn,
+  .ll-form-actions .ll-btn {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .ll-section {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
+  .ll-stats {
+    gap: 10px 16px;
+  }
+
+  .ll-stats strong {
+    font-size: 1.1rem;
+  }
+
+  .ll-cue {
+    aspect-ratio: auto;
+    height: auto;
+    min-height: 420px;
+    max-width: 100%;
+  }
+
+  .ll-cue-face {
+    padding: 16px 16px 14px;
+    overflow: auto;
+  }
+
+  .ll-cue-prompt {
+    font-size: 1.12rem;
+    margin-bottom: 12px;
+  }
+
+  .ll-cue-bullets {
+    font-size: 0.9rem;
+  }
+
+  .ll-trf {
+    transform: none;
+    max-width: 520px;
+  }
+
+  .ll-contact-card {
+    padding: 24px 18px;
+  }
+
+  .ll-form input,
+  .ll-form textarea {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  .ll-faq-item button {
+    min-height: 48px;
+    padding: 14px 0;
+  }
+
+  .ll-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+body.ll-nav-locked {
+  overflow: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {

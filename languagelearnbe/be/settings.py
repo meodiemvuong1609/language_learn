@@ -15,6 +15,33 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+def _csv_env(name, default=""):
+    """Split comma-separated env values; strip quotes/whitespace/trailing slashes."""
+    raw = os.environ.get(name, default)
+    if not raw:
+        return []
+    items = []
+    for part in str(raw).split(","):
+        item = part.strip().strip("'\"").rstrip("/")
+        if item:
+            items.append(item)
+    return items
+
+
+def _origin_variants(origin):
+    """Allow both apex and www for the same HTTPS/HTTP origin."""
+    if "://" not in origin:
+        return [origin]
+    scheme, host = origin.split("://", 1)
+    variants = [f"{scheme}://{host}"]
+    if host.startswith("www."):
+        variants.append(f"{scheme}://{host[4:]}")
+    elif host and host not in {"localhost", "127.0.0.1"} and not host[0].isdigit():
+        variants.append(f"{scheme}://www.{host}")
+    return variants
+
+
 SECRET_KEY = (
     os.environ.get("SECRET_KEY")
     or os.environ.get("DJANGO_SECRET_KEY")
@@ -25,9 +52,15 @@ if not DEBUG and SECRET_KEY == "django-insecure-dev-key":
     raise ValueError(
         "Set SECRET_KEY or DJANGO_SECRET_KEY when DEBUG=False."
     )
-ALLOWED_HOSTS = os.environ.get("ENV_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
-CORS_ALLOWED_ORIGINS = os.environ.get("ENV_ALLOWED_CORS", "http://localhost:8081").split(",")
-CORS_ALLOWED_ORIGIN_REGEXES = [
+
+ALLOWED_HOSTS = _csv_env("ENV_ALLOWED_HOSTS", "localhost,127.0.0.1")
+
+_cors_origins = []
+for origin in _csv_env("ENV_ALLOWED_CORS", "http://localhost:8081"):
+    _cors_origins.extend(_origin_variants(origin))
+# People often put full origins in ENV_ALLOWED_ORIGIN_REGEXES; treat those as
+# origins too. Real regex patterns (not starting with http) stay as regexes.
+_cors_regexes = [
     r"^https?://localhost(:[0-9]+)?$",
     r"^https?://127\.0\.0\.1(:[0-9]+)?$",
     r"^https?://10\.\d+\.\d+\.\d+(:[0-9]+)?$",
@@ -36,6 +69,24 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^http://10\.\d+\.\d+\.\d+:\d+$",
     r"^https?://172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+(:[0-9]+)?$",
 ]
+for item in _csv_env("ENV_ALLOWED_ORIGIN_REGEXES"):
+    if item.startswith(("http://", "https://")):
+        _cors_origins.extend(_origin_variants(item))
+    else:
+        _cors_regexes.append(item)
+
+_cors_origins = list(dict.fromkeys(_cors_origins))
+if _cors_origins == ["*"]:
+    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOWED_ORIGINS = []
+else:
+    CORS_ALLOWED_ORIGINS = _cors_origins
+CORS_ALLOWED_ORIGIN_REGEXES = _cors_regexes
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = list(CORS_ALLOWED_ORIGINS)
+# Nginx/TLS terminates HTTPS in front of Gunicorn.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
 
 INSTALLED_APPS = [
     "django.contrib.admin",

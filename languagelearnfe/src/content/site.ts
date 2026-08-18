@@ -29,84 +29,96 @@ export const site = {
     phone: '0866 062 701',
     phoneHref: 'tel:+84866062701',
     zalo: 'https://zalo.me/0866062701',
+    facebook: 'https://www.facebook.com/ngoc.thao.39108',
     city: { vi: 'Thanh Hóa · dạy online toàn quốc', en: 'Thanh Hoa · online nationwide' },
     hours: { vi: 'T2–T7 · 9:00–21:00', en: 'Mon–Sat · 9:00–21:00' },
   },
+  proofImage: {
+    src: '/ielts-8.0-trf.png',
+    alt: {
+      vi: 'Phiếu điểm IELTS Academic: Overall Band Score 8.0, CEFR C1, dấu xác thực Cambridge / British Council / IDP',
+      en: 'IELTS Academic Test Report: Overall Band Score 8.0, CEFR C1, Cambridge / British Council / IDP validation stamp',
+    },
+    caption: {
+      vi: 'TRF thật · Overall 8.0 · CEFR C1',
+      en: 'Official TRF · Overall 8.0 · CEFR C1',
+    },
+  },
   seo: {
     vi: {
-      title: 'Ngọc Thảo IELTS — Giáo viên IELTS 8.0, dạy online từ Thanh Hóa',
+      title: 'Ngọc Thảo IELTS — Giáo viên IELTS Academic 8.0, dạy online',
       description:
-        'Cô Ngọc Thảo, IELTS 8.0. Luyện 1-1 và nhóm nhỏ cho học sinh THPT và sinh viên. Speaking cue card, Writing Task 2. Nhắn Zalo 0866 062 701.',
+        'Cô Ngọc Thảo, IELTS Academic 8.0 (CEFR C1). Luyện 1-1 và nhóm nhỏ cho học sinh THPT và sinh viên, dạy online từ Thanh Hóa. Liên hệ Facebook hoặc Zalo 0866 062 701.',
       ogLocale: 'vi_VN',
     },
     en: {
-      title: 'Ngoc Thao IELTS — Band 8.0 trainer, online from Thanh Hoa',
+      title: 'Ngoc Thao IELTS — IELTS Academic 8.0 trainer, taught online',
       description:
-        'Ngoc Thao, IELTS 8.0. 1:1 and small-group coaching for high-school and university students. Cue cards and Writing Task 2. Zalo 0866 062 701.',
+        'Ngoc Thao, IELTS Academic 8.0 (CEFR C1). 1:1 and small-group coaching for high-school and university students, online from Thanh Hoa. Facebook or Zalo 0866 062 701.',
       ogLocale: 'en_US',
     },
   } satisfies I18n<{ title: string; description: string; ogLocale: string }>,
   nav: {
-    vi: { about: 'Về cô', programs: 'Chương trình', method: 'Cách học', faq: 'FAQ', contact: 'Liên hệ', login: 'Vào học' },
-    en: { about: 'About', programs: 'Programs', method: 'Method', faq: 'FAQ', contact: 'Contact', login: 'Study app' },
+    vi: { about: 'Về cô', programs: 'Chương trình', method: 'Phương pháp', faq: 'Câu hỏi', contact: 'Liên hệ', login: 'Đăng nhập' },
+    en: { about: 'About', programs: 'Programs', method: 'Method', faq: 'FAQ', contact: 'Contact', login: 'Sign in' },
   },
   persona: {
     vi: {
       name: 'Cô Ngọc Thảo',
-      role: 'Giáo viên IELTS · Band 8.0',
+      role: 'Giáo viên IELTS · Academic 8.0',
       location: 'Thanh Hóa',
-      headline: 'Bạn không cần thêm một giáo trình. Bạn cần người nghe Speaking của bạn — rồi chỉnh đúng chỗ.',
+      headline: 'Luyện IELTS điềm tĩnh, đúng format thi — Speaking đủ hai phút, Writing đúng task.',
       lead:
-        'Kèm học sinh THPT và sinh viên, dạy online từ Thanh Hóa. Lớp nhỏ, sửa bài trong buổi — không để luyện sai cả tháng rồi mới biết.',
+        'Cô Ngọc Thảo, IELTS Academic 8.0, dạy online từ Thanh Hóa. Đồng hành cùng học sinh THPT và sinh viên: lớp nhỏ, góp ý ngay trong buổi, chấm bài theo band descriptor.',
       bio:
-        'Mình dạy IELTS như coi Speaking Part 2: một thẻ, một ý, nói đủ hai phút — không lan man. Học viên được map lỗi (phát âm, độ trôi chảy, task response), rồi khoan đúng chỗ đó. Writing chấm theo band descriptor, không chấm “cảm tính”.',
+        'Cô dạy IELTS theo đúng yêu cầu kỳ thi: Speaking Part 2 một cue card, một ý chính, nói đủ thời gian; Writing được nhận xét theo descriptor công khai, không chấm cảm tính. Học viên được xác định lỗi cụ thể (phát âm, độ trôi chảy, task response) rồi luyện đúng phần đó. Phiếu điểm 8.0 / C1 được đăng kèm để học viên và phụ huynh đối chiếu.',
       credentials: [
-        'IELTS Academic 8.0',
-        'Đối tượng: học sinh THPT và sinh viên',
-        'Dạy online từ Thanh Hóa · 1-1 và nhóm nhỏ',
+        'IELTS Academic 8.0 · CEFR C1',
+        'Dạy online từ Thanh Hóa, học viên toàn quốc',
+        'Đối tượng: học sinh THPT và sinh viên · 1-1 và nhóm nhỏ',
       ],
       stats: [
         { value: '8.0', label: 'Overall' },
+        { value: 'C1', label: 'CEFR' },
+        { value: 'THPT', label: 'và sinh viên' },
         { value: 'Online', label: 'toàn quốc' },
-        { value: 'THPT', label: '+ sinh viên' },
-        { value: 'TH', label: 'Thanh Hóa' },
       ],
     },
     en: {
       name: 'Ngoc Thao',
-      role: 'IELTS trainer · Band 8.0',
+      role: 'IELTS trainer · Academic 8.0',
       location: 'Thanh Hoa',
-      headline: 'You don’t need another coursebook. You need someone who hears your Speaking — then fixes the exact gap.',
+      headline: 'Calm, exam-faithful IELTS coaching — two minutes on Speaking, Writing on task.',
       lead:
-        'High-school and university students, taught online from Thanh Hoa. Small groups, in-session correction — no month of silent practice on the wrong habit.',
+        'Ngoc Thao, IELTS Academic 8.0, teaches online from Thanh Hoa. High-school and university students: small groups, in-session feedback, marking to the public band descriptors.',
       bio:
-        'I teach IELTS the way Part 2 works: one card, one idea, two full minutes. Learners get an error map (pronunciation, fluency, task response), then we drill that map. Writing is marked to the public band descriptors, not a vibe.',
+        'Lessons follow the exam: Speaking Part 2 is one cue card, one clear idea, spoken in full time; Writing is marked to published descriptors, not impression. Learners receive a specific error map (pronunciation, fluency, task response) and practise that map. The 8.0 / C1 Test Report is shown so students and parents can verify the score.',
       credentials: [
-        'IELTS Academic 8.0',
-        'For high-school and university students',
-        'Online from Thanh Hoa · 1:1 and small groups',
+        'IELTS Academic 8.0 · CEFR C1',
+        'Online from Thanh Hoa, learners nationwide',
+        'High-school and university students · 1:1 and small groups',
       ],
       stats: [
         { value: '8.0', label: 'Overall' },
+        { value: 'C1', label: 'CEFR' },
+        { value: 'School', label: '& university' },
         { value: 'Online', label: 'nationwide' },
-        { value: 'High school', label: '+ uni' },
-        { value: 'TH', label: 'Thanh Hoa' },
       ],
     },
   },
   hero: {
     vi: {
-      eyebrow: 'Luyện thi IELTS · online · THPT & sinh viên',
-      primaryCta: 'Nhắn Zalo tư vấn',
-      secondaryCta: 'Xem chương trình',
-      caption: 'Thẻ Part 2 đúng format thi — học viên luyện trên cue card, không trên slide.',
+      eyebrow: 'IELTS Academic 8.0 · dạy online · THPT và sinh viên',
+      primaryCta: 'Nhắn Facebook',
+      secondaryCta: 'Nhắn Zalo',
+      caption: 'Cue card Part 2 đúng format kỳ thi — luyện trên thẻ, không trên slide.',
       flipHint: 'Chạm để lật thẻ',
     },
     en: {
-      eyebrow: 'IELTS prep · online · high school & uni',
-      primaryCta: 'Message on Zalo',
-      secondaryCta: 'See programs',
-      caption: 'A real Part 2 card — learners drill the exam object, not a slide deck.',
+      eyebrow: 'IELTS Academic 8.0 · online · high school and university',
+      primaryCta: 'Message on Facebook',
+      secondaryCta: 'Message on Zalo',
+      caption: 'A Part 2 cue card in exam format — practice on the card, not a slide.',
       flipHint: 'Tap to flip',
     },
   },
@@ -129,33 +141,33 @@ export const site = {
     vi: [
       {
         band: '1-1',
-        title: 'Lộ trình cá nhân',
-        duration: 'THPT & sinh viên · online',
-        blurb: 'Diagnostic mock, gap map, rồi khoan Speaking + Writing đúng band mục tiêu của em.',
-        points: ['Lịch linh hoạt sau giờ học', 'Chấm bài Writing theo descriptor', 'Mock dưới thời gian thi'],
+        title: 'Luyện kèm cá nhân',
+        duration: 'THPT và sinh viên · online',
+        blurb: 'Buổi đầu làm mock chẩn đoán, xác định lỗ hổng, sau đó luyện Speaking và Writing theo band mục tiêu.',
+        points: ['Lịch buổi tối và cuối tuần', 'Chấm Writing theo descriptor', 'Mock đúng thời gian thi'],
       },
       {
         band: 'Part 2',
-        title: 'Speaking Clinic',
+        title: 'Speaking Part 2',
         duration: 'Cue card · ghi âm',
-        blurb: 'Mỗi buổi một thẻ. Sửa phát âm và độ trôi chảy, nói lại đến khi kín hai phút.',
-        points: ['Ngân hàng cue card cập nhật', 'Sửa chunk, không sửa từng chữ', 'Part 3 follow-up sau mỗi thẻ'],
+        blurb: 'Mỗi buổi một thẻ. Điều chỉnh phát âm và độ trôi chảy, luyện lại đến khi nói đủ hai phút.',
+        points: ['Ngân hàng cue card cập nhật', 'Sửa theo cụm ý, không sửa từng chữ', 'Câu hỏi Part 3 sau mỗi thẻ'],
       },
       {
         band: 'Nhóm nhỏ',
-        title: 'Lớp THPT / sinh viên',
-        duration: 'Online · nhóm ≤ 6',
-        blurb: 'Cùng nhịp học kỳ: từ vựng học thuật, Task 2, deadline thật. Phụ huynh THPT có thể nhận báo tiến độ.',
-        points: ['Không lớp nhồi 20 người', 'Bài tập có hạn nộp', 'Phù hợp ôn thi đại học / IELTS song song'],
+        title: 'Nhóm tối đa 6 học viên',
+        duration: 'Online · THPT và sinh viên',
+        blurb: 'Theo nhịp học kỳ: từ vựng học thuật, Writing Task 2, hạn nộp rõ ràng. Phụ huynh học sinh THPT có thể nhận báo tiến độ.',
+        points: ['Không lớp đông', 'Bài tập có hạn nộp', 'Phù hợp ôn thi tốt nghiệp / đại học song song IELTS'],
       },
     ],
     en: [
       {
         band: '1:1',
-        title: 'Personal pathway',
-        duration: 'High school & uni · online',
-        blurb: 'Diagnostic mock, a gap map, then Speaking + Writing drills aimed at the student’s target band.',
-        points: ['Hours after school or lectures', 'Writing marked to descriptors', 'Timed mocks'],
+        title: 'Private tuition',
+        duration: 'High school and university · online',
+        blurb: 'A diagnostic mock, a gap map, then Speaking and Writing practice aimed at the student’s target band.',
+        points: ['Evening and weekend hours', 'Writing marked to descriptors', 'Timed mocks'],
       },
       {
         band: 'Part 2',
@@ -166,30 +178,30 @@ export const site = {
       },
       {
         band: 'Small group',
-        title: 'High-school / uni cohort',
-        duration: 'Online · groups of ≤ 6',
-        blurb: 'Term rhythm: academic vocabulary, Task 2, real deadlines. Parents of high-schoolers can get a progress note.',
-        points: ['Not a hall of twenty', 'Homework with due dates', 'Fits school + IELTS in parallel'],
+        title: 'Groups of up to six',
+        duration: 'Online · high school and university',
+        blurb: 'Term rhythm: academic vocabulary, Task 2, clear deadlines. Parents of high-school students may receive a progress note.',
+        points: ['Not a large lecture class', 'Homework with due dates', 'Fits school exams alongside IELTS'],
       },
     ],
   } satisfies I18n<Program[]>,
   method: {
     vi: {
-      title: 'Bốn bước, đúng thứ tự thi',
-      lead: 'Không học “cả cuốn”. Học đúng lỗ hổng sau một mock thật.',
+      title: 'Luyện theo đúng trình tự kỳ thi',
+      lead: 'Không học dàn trải cả giáo trình. Tập trung vào lỗ hổng sau một bài mock.',
       steps: [
         { title: 'Mock chẩn đoán', body: 'Speaking ghi âm + Writing Task 2. Chấm theo descriptor công khai.' },
         { title: 'Gap map', body: '3–5 lỗi kéo band xuống. Đó là giáo án — không phải mục lục sách.' },
-        { title: 'Khoan cue / task', body: 'Part 2 bấm giờ. Task 2 viết 40 phút. Sửa, nói/viết lại.' },
+        { title: 'Luyện cue / task', body: 'Part 2 bấm giờ. Task 2 viết 40 phút. Sửa, nói/viết lại.' },
         { title: 'Full mock', body: 'Làm đủ 4 kỹ năng dưới áp lực. So với mock đầu. Chỉnh nốt.' },
       ],
     },
     en: {
-      title: 'Four steps, in exam order',
-      lead: 'Not “the whole book”. The gaps that showed up on a real mock.',
+      title: 'Practice in exam order',
+      lead: 'Not the entire coursebook. The gaps that appear on a real mock.',
       steps: [
         { title: 'Diagnostic mock', body: 'Recorded Speaking plus Writing Task 2. Marked to public descriptors.' },
-        { title: 'Gap map', body: 'Three to five band-killers. That list is the syllabus — not a table of contents.' },
+        { title: 'Gap map', body: 'Three to five issues that hold the band down. That list is the syllabus.' },
         { title: 'Cue / task drills', body: 'Timed Part 2. 40-minute Task 2. Fix, then do it again.' },
         { title: 'Full mock', body: 'All four skills under pressure. Compare with day one. Close what’s left.' },
       ],
@@ -197,7 +209,7 @@ export const site = {
   },
   proof: {
     vi: {
-      title: 'Học viên nói gì sau mock',
+      title: 'Học viên chia sẻ sau buổi học',
       items: [
         { name: 'Hà, lớp 12', quote: 'Trước em đọc cue rồi đứng hình. Cô bắt em kể một chuyện cụ thể — hai phút hết mà không cần nhìn thẻ.' },
         { name: 'Nam, năm 2 ĐH', quote: 'Writing không còn “viết cho dài”. Task response được gạch ra từng câu. Học online mà vẫn bị bắt nói, không trốn được.' },
@@ -205,7 +217,7 @@ export const site = {
       ],
     },
     en: {
-      title: 'After the mock, not after the brochure',
+      title: 'After lessons, in their words',
       items: [
         { name: 'Ha, grade 12', quote: 'I used to freeze on the cue. She made me tell one concrete story — two minutes, no staring at the card.' },
         { name: 'Nam, 2nd year', quote: 'Writing stopped being “make it longer”. Task response was marked line by line. Online, and I still had to speak.' },
@@ -225,7 +237,7 @@ export const site = {
       },
       {
         q: 'Bao lâu thì lên band?',
-        a: 'Không cam kết số band. Sau mock đầu, cô nói thẳng khoảng thời gian thực tế nếu em nộp bài đúng hạn.',
+        a: 'Không cam kết số band. Sau mock đầu, cô trao đổi thời gian thực tế nếu học viên nộp bài đúng hạn.',
       },
       {
         q: 'Tài liệu dùng gì?',
@@ -233,7 +245,7 @@ export const site = {
       },
       {
         q: 'Đặt lịch tư vấn thế nào?',
-        a: 'Nhắn Zalo 0866 062 701. Tư vấn khoảng 20 phút: mục tiêu band, lịch học, và nghe một đoạn Speaking nếu em đã có.',
+        a: 'Nhắn Facebook hoặc Zalo 0866 062 701. Tư vấn khoảng 20 phút: mục tiêu band, lịch học, và nghe một đoạn Speaking nếu học viên đã có.',
       },
       {
         q: 'Hủy buổi thì sao?',
@@ -259,7 +271,7 @@ export const site = {
       },
       {
         q: 'How do I book a consult?',
-        a: 'Message Zalo 0866 062 701. About twenty minutes: target band, schedule, and a Speaking sample if you have one.',
+        a: 'Message Facebook or Zalo 0866 062 701. About twenty minutes: target band, schedule, and a Speaking sample if available.',
       },
       {
         q: 'Cancellations?',
@@ -269,25 +281,35 @@ export const site = {
   } satisfies I18n<FaqItem[]>,
   contactCopy: {
     vi: {
-      title: 'Mang một cue card. Mang mục tiêu band. Cô lắng nghe 20 phút.',
-      lead: 'Tư vấn trên Zalo, không phải buổi bán khóa. Nếu không fit, cô nói không.',
-      nameLabel: 'Tên',
+      title: 'Liên hệ Facebook hoặc Zalo để được tư vấn',
+      lead: 'Buổi trao đổi khoảng 20 phút: mục tiêu band và lịch học. Học phí được thông báo trực tiếp, chưa niêm yết trên website.',
+      nameLabel: 'Họ và tên',
       goalLabel: 'Band mục tiêu',
-      messageLabel: 'Lớp / trường · lịch rảnh',
+      messageLabel: 'Lớp / trường · thời gian rảnh',
       submit: 'Gọi điện',
       zalo: 'Nhắn Zalo',
-      note: 'Zalo / SĐT: 0866 062 701 · học phí trao đổi trực tiếp, chưa niêm yết trên web.',
+      facebook: 'Nhắn Facebook',
+      note: 'Facebook · Zalo / điện thoại 0866 062 701',
     },
     en: {
-      title: 'Bring a cue card. Bring a target band. She’ll listen for 20 minutes.',
-      lead: 'The consult is on Zalo, not a sales pitch. If it’s not a fit, she’ll say so.',
-      nameLabel: 'Name',
+      title: 'Contact us on Facebook or Zalo',
+      lead: 'A twenty-minute conversation: target band and schedule. Fees are confirmed directly and are not listed on this site yet.',
+      nameLabel: 'Full name',
       goalLabel: 'Target band',
       messageLabel: 'School / year · availability',
       submit: 'Call',
       zalo: 'Message on Zalo',
-      note: 'Zalo / phone: 0866 062 701 · fees are discussed directly, not listed here yet.',
+      facebook: 'Message on Facebook',
+      note: 'Facebook · Zalo / phone 0866 062 701',
     },
+  },
+  programsHead: {
+    vi: 'Chương trình học',
+    en: 'Programs',
+  },
+  faqHead: {
+    vi: 'Câu hỏi thường gặp',
+    en: 'Frequently asked questions',
   },
   footer: {
     vi: 'Ngọc Thảo IELTS · Thanh Hóa · dạy online',

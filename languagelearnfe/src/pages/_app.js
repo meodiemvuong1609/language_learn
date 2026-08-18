@@ -31,6 +31,7 @@ export default function MyApp({ Component, pageProps }) {
     <Provider store={store}>
       <Head>
         <title>Ngọc Thảo IELTS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
       <ErrorBoundary>
         <ToastProvider>

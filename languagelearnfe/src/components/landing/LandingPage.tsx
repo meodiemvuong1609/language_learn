@@ -28,11 +28,23 @@ function Nav() {
   const nav = site.nav[locale];
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    document.body.classList.toggle('ll-nav-locked', open);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.classList.remove('ll-nav-locked');
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
   return (
     <header className="ll-nav">
-      <a href="#top" className="ll-logo">
+      <a href="#top" className="ll-logo" onClick={() => setOpen(false)}>
         <span className="ll-logo-mark">cue</span>
-        {site.brand}
+        <span className="ll-logo-text">{site.brand}</span>
       </a>
       <button
         type="button"
@@ -41,8 +53,16 @@ function Nav() {
         aria-controls="ll-nav-links"
         onClick={() => setOpen((v) => !v)}
       >
-        {open ? 'Close' : 'Menu'}
+        {open ? (locale === 'vi' ? 'Đóng' : 'Close') : (locale === 'vi' ? 'Menu' : 'Menu')}
       </button>
+      {open ? (
+        <button
+          type="button"
+          className="ll-nav-scrim"
+          aria-label={locale === 'vi' ? 'Đóng menu' : 'Close menu'}
+          onClick={() => setOpen(false)}
+        />
+      ) : null}
       <nav id="ll-nav-links" className={open ? 'is-open' : ''} onClick={() => setOpen(false)}>
         <a href="#about">{nav.about}</a>
         <a href="#programs">{nav.programs}</a>
@@ -68,10 +88,10 @@ function Hero() {
         <h1>{persona.headline}</h1>
         <p className="ll-lead">{persona.lead}</p>
         <div className="ll-hero-actions">
-          <a className="ll-btn ll-btn-stamp" href={site.contact.zalo} target="_blank" rel="noreferrer">
+          <a className="ll-btn ll-btn-stamp" href={site.contact.facebook} target="_blank" rel="noopener noreferrer">
             {hero.primaryCta}
           </a>
-          <a className="ll-btn ll-btn-ghost" href="#programs">
+          <a className="ll-btn ll-btn-ghost" href={site.contact.zalo} target="_blank" rel="noopener noreferrer">
             {hero.secondaryCta}
           </a>
         </div>
@@ -104,12 +124,23 @@ function About() {
         </h2>
       </div>
       <div className="ll-about">
-        <p className="ll-bio">{persona.bio}</p>
-        <ul className="ll-creds">
-          {persona.credentials.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
+        <div>
+          <p className="ll-bio">{persona.bio}</p>
+          <ul className="ll-creds">
+            {persona.credentials.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <figure className="ll-trf ll-reveal">
+          <img
+            src={site.proofImage.src}
+            alt={site.proofImage.alt[locale]}
+            width={720}
+            height={420}
+          />
+          <figcaption>{site.proofImage.caption[locale]}</figcaption>
+        </figure>
       </div>
     </section>
   );
@@ -124,7 +155,7 @@ function Programs() {
     <section className="ll-section" id="programs">
       <div className="ll-section-head ll-reveal">
         <p className="ll-eyebrow">{nav.programs}</p>
-        <h2>{locale === 'vi' ? 'Ba cách học — chọn đúng nhịp của bạn' : 'Three rooms — pick the pace that fits'}</h2>
+        <h2>{site.programsHead[locale]}</h2>
       </div>
       <div className="ll-program-grid">
         {programs.map((program) => (
@@ -200,7 +231,7 @@ function Faq() {
       <div className="ll-split">
         <div className="ll-section-head">
           <p className="ll-eyebrow">FAQ</p>
-          <h2>{locale === 'vi' ? 'Hỏi trước khi đăng ký' : 'Ask before you enrol'}</h2>
+          <h2>{site.faqHead[locale]}</h2>
         </div>
         <div className="ll-faq">
           {items.map((item, index) => {
@@ -249,6 +280,15 @@ function Contact() {
           <br />
           {site.contact.phone}
         </p>
+        <p className="ll-social">
+          <a href={site.contact.facebook} target="_blank" rel="noopener noreferrer">
+            Facebook
+          </a>
+          <span aria-hidden>·</span>
+          <a href={site.contact.zalo} target="_blank" rel="noopener noreferrer">
+            Zalo
+          </a>
+        </p>
         <form className="ll-form" onSubmit={onSubmit}>
           <label>
             {copy.nameLabel}
@@ -263,7 +303,10 @@ function Contact() {
             <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={4} />
           </label>
           <div className="ll-form-actions">
-            <a className="ll-btn ll-btn-stamp" href={site.contact.zalo} target="_blank" rel="noreferrer">
+            <a className="ll-btn ll-btn-stamp" href={site.contact.facebook} target="_blank" rel="noopener noreferrer">
+              {copy.facebook}
+            </a>
+            <a className="ll-btn ll-btn-ghost" href={site.contact.zalo} target="_blank" rel="noopener noreferrer">
               {copy.zalo}
             </a>
             <button type="submit" className="ll-btn ll-btn-ghost">
@@ -289,6 +332,7 @@ function Seo() {
     knowsLanguage: ['vi', 'en'],
     address: { '@type': 'PostalAddress', addressLocality: persona.location, addressCountry: 'VN' },
     telephone: site.contact.phoneHref,
+    sameAs: [site.contact.facebook],
   };
 
   return (
@@ -296,7 +340,7 @@ function Seo() {
       <title>{seo.title}</title>
       <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      <meta property="og:image" content="/apple-touch-icon.png" />
+      <meta property="og:image" content={site.proofImage.src} />
       <meta name="description" content={seo.description} />
       <meta property="og:title" content={seo.title} />
       <meta property="og:description" content={seo.description} />
@@ -349,7 +393,15 @@ function LandingInner() {
       </main>
       <footer className="ll-footer">
         <span>{site.footer[locale]}</span>
-        <a href={site.contact.phoneHref}>{site.contact.phone}</a>
+        <span className="ll-footer-links">
+          <a href={site.contact.facebook} target="_blank" rel="noopener noreferrer">
+            Facebook
+          </a>
+          <a href={site.contact.zalo} target="_blank" rel="noopener noreferrer">
+            Zalo
+          </a>
+          <a href={site.contact.phoneHref}>{site.contact.phone}</a>
+        </span>
       </footer>
     </div>
   );
