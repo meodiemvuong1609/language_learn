@@ -156,7 +156,7 @@ export default function QuizDetailPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">{quiz.title}</h1>
-          <div className={`text-xl font-mono font-bold ${timeLeft < 60 ? 'text-red-600' : 'text-blue-600'}`}>
+          <div className={`text-xl font-mono font-bold ${timeLeft < 60 ? 'text-red-600' : 'text-moss'}`}>
             ⏱️ {formatTime(timeLeft)}
           </div>
         </div>
@@ -164,7 +164,7 @@ export default function QuizDetailPage() {
         {/* Progress bar */}
         <div className="w-full bg-gray-200 rounded-full h-2 mb-8">
           <div
-            className="bg-blue-600 h-2 rounded-full transition-all"
+            className="bg-stamp h-2 rounded-full transition-all"
             style={{ width: `${(Object.keys(answers).length / quiz.questions.length) * 100}%` }}
           />
         </div>

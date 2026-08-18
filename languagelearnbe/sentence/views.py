@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from common.mixins import StandardResultsSetPagination
 from common.grading import answers_match
+from general.general import convert_response
 from .models import SentenceStructure
 from .serializers import SentenceStructureSerializer
 
@@ -38,9 +39,16 @@ class SentenceStructureViewSet(viewsets.ModelViewSet):
             })
         total = len(items) or 1
         percentage = round(100 * correct / total, 2)
-        return Response({
-            'correct': correct,
-            'total': len(items),
-            'percentage': percentage,
-            'results': results,
-        }, status=status.HTTP_200_OK)
+        return Response(
+            convert_response(
+                message='Exercise submitted successfully',
+                status_code=status.HTTP_200_OK,
+                data={
+                    'correct': correct,
+                    'total': len(items),
+                    'percentage': percentage,
+                    'results': results,
+                }
+            ),
+            status=status.HTTP_200_OK
+        )

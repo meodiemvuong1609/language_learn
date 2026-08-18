@@ -50,7 +50,9 @@ class VocabularyViewSetTest(TestCase):
     def test_by_topic_action(self):
         response = self.client.get(f'/api/vocabulary/by_topic/?topic_id={self.topic.id}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertGreater(len(response.data), 0)
+        self.assertEqual(response.data['code'], status.HTTP_200_OK)
+        self.assertGreater(len(response.data['data']), 0)
+        self.assertEqual(response.data['count'], len(response.data['data']))
 
     def test_by_topic_missing_param(self):
         response = self.client.get('/api/vocabulary/by_topic/')
@@ -59,7 +61,7 @@ class VocabularyViewSetTest(TestCase):
     def test_by_level_action(self):
         response = self.client.get(f'/api/vocabulary/by_level/?level_id={self.level.id}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertGreater(len(response.data), 0)
+        self.assertGreater(len(response.data['data']), 0)
 
     def test_related_words_action(self):
         # Create synonyms
@@ -67,8 +69,9 @@ class VocabularyViewSetTest(TestCase):
         self.vocab.synonyms.add(vocab2)
         response = self.client.get(f'/api/vocabulary/{self.vocab.id}/related_words/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('synonyms', response.data)
-        self.assertIn('antonyms', response.data)
+        self.assertIn('synonyms', response.data['data'])
+        self.assertIn('antonyms', response.data['data'])
+        self.assertEqual(response.data['code'], status.HTTP_200_OK)
 
     def test_search_vocabulary(self):
         response = self.client.get('/api/vocabulary/?search=hello')
@@ -172,7 +175,7 @@ class UserVocabularyViewSetTest(TestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/api/user-vocabulary/statistics/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        data = response.data
+        data = response.data['data']
         self.assertIn('total_words', data)
         self.assertIn('mastered_words', data)
         self.assertEqual(data['total_words'], 1)
@@ -181,6 +184,8 @@ class UserVocabularyViewSetTest(TestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/api/user-vocabulary/due_for_review/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('data', response.data)
+        self.assertIn('count', response.data)
 
     def test_review_action_correct(self):
         self.client.force_authenticate(user=self.user)
@@ -213,3 +218,4 @@ class UserVocabularyViewSetTest(TestCase):
         response = self.client.get('/api/user-vocabulary/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 0)
+

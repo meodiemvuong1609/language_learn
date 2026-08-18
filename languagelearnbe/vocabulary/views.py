@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.db.models import Q, Count, Avg
 from django.utils import timezone
 from common.mixins import StandardResultsSetPagination
+from general.general import convert_response
 from .models import Vocabulary, VocabularyList, VocabularyListItem, UserVocabulary
 from .serializers import (
     VocabularySerializer, VocabularyListSerializer,
@@ -30,8 +31,22 @@ class VocabularyViewSet(viewsets.ModelViewSet):
         if topic_id:
             queryset = self.get_queryset().filter(topics__id=topic_id)
             serializer = self.get_serializer(queryset, many=True)
-            return Response(serializer.data)
-        return Response({'error': 'topic_id is required'}, status=400)
+            return Response(
+                convert_response(
+                    message='Vocabularies retrieved successfully',
+                    status_code=status.HTTP_200_OK,
+                    data=serializer.data,
+                    count=len(serializer.data)
+                ),
+                status=status.HTTP_200_OK
+            )
+        return Response(
+            convert_response(
+                message='topic_id is required',
+                status_code=status.HTTP_400_BAD_REQUEST
+            ),
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     @action(detail=False, methods=['GET'])
     def by_level(self, request):
@@ -40,8 +55,22 @@ class VocabularyViewSet(viewsets.ModelViewSet):
         if level_id:
             queryset = self.get_queryset().filter(level_id=level_id)
             serializer = self.get_serializer(queryset, many=True)
-            return Response(serializer.data)
-        return Response({'error': 'level_id is required'}, status=400)
+            return Response(
+                convert_response(
+                    message='Vocabularies retrieved successfully',
+                    status_code=status.HTTP_200_OK,
+                    data=serializer.data,
+                    count=len(serializer.data)
+                ),
+                status=status.HTTP_200_OK
+            )
+        return Response(
+            convert_response(
+                message='level_id is required',
+                status_code=status.HTTP_400_BAD_REQUEST
+            ),
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     @action(detail=True, methods=['GET'])
     def related_words(self, request, pk=None):
@@ -51,7 +80,15 @@ class VocabularyViewSet(viewsets.ModelViewSet):
             'synonyms': VocabularySerializer(vocabulary.synonyms, many=True).data,
             'antonyms': VocabularySerializer(vocabulary.antonyms, many=True).data
         }
-        return Response(data)
+        return Response(
+            convert_response(
+                message='Related words retrieved successfully',
+                status_code=status.HTTP_200_OK,
+                data=data,
+                count=len(data['synonyms']) + len(data['antonyms'])
+            ),
+            status=status.HTTP_200_OK
+        )
 
 class VocabularyListViewSet(viewsets.ModelViewSet):
     serializer_class = VocabularyListSerializer
@@ -76,13 +113,13 @@ class VocabularyListViewSet(viewsets.ModelViewSet):
         """Add words to vocabulary list"""
         vocab_list = self.get_object()
         word_ids = request.data.get('word_ids', [])
-        
+
         if not word_ids:
             return Response({'error': 'word_ids is required'}, status=400)
-            
+
         items = []
         order = VocabularyListItem.objects.filter(vocabulary_list=vocab_list).count()
-        
+
         for word_id in word_ids:
             order += 1
             items.append(VocabularyListItem(
@@ -90,7 +127,7 @@ class VocabularyListViewSet(viewsets.ModelViewSet):
                 vocabulary_id=word_id,
                 order=order
             ))
-        
+
         VocabularyListItem.objects.bulk_create(items)
         return Response({'status': 'words added'})
 
@@ -99,15 +136,15 @@ class VocabularyListViewSet(viewsets.ModelViewSet):
         """Remove words from vocabulary list"""
         vocab_list = self.get_object()
         word_ids = request.data.get('word_ids', [])
-        
+
         if not word_ids:
             return Response({'error': 'word_ids is required'}, status=400)
-            
+
         VocabularyListItem.objects.filter(
             vocabulary_list=vocab_list,
             vocabulary_id__in=word_ids
         ).delete()
-        
+
         return Response({'status': 'words removed'})
 
 class UserVocabularyViewSet(viewsets.ModelViewSet):
@@ -130,7 +167,15 @@ class UserVocabularyViewSet(viewsets.ModelViewSet):
             Q(next_review__lte=timezone.now()) | Q(next_review__isnull=True)
         )
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(
+            convert_response(
+                message='Words due for review retrieved successfully',
+                status_code=status.HTTP_200_OK,
+                data=serializer.data,
+                count=len(serializer.data)
+            ),
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=False, methods=['GET'])
     def statistics(self, request):
@@ -140,43 +185,65 @@ class UserVocabularyViewSet(viewsets.ModelViewSet):
         mastered_words = queryset.filter(mastery_level=5).count()
         learning_words = queryset.filter(mastery_level__gt=0, mastery_level__lt=5).count()
         average_mastery = queryset.aggregate(avg=Avg('mastery_level'))['avg'] or 0
-        
-        return Response({
+
+        data = {
             'total_words': total_words,
             'mastered_words': mastered_words,
             'learning_words': learning_words,
             'new_words': total_words - mastered_words - learning_words,
             'average_mastery': round(average_mastery, 2)
-        })
+        }
+        return Response(
+            convert_response(
+                message='Vocabulary statistics retrieved successfully',
+                status_code=status.HTTP_200_OK,
+                data=data,
+                count=total_words
+            ),
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=True, methods=['POST'])
     def review(self, request, pk=None):
         """Record a review attempt for a word"""
         user_vocab = self.get_object()
         is_correct = request.data.get('is_correct', False)
-        
+
         user_vocab.review_count += 1
         if is_correct:
             user_vocab.correct_count += 1
             user_vocab.mastery_level = min(5, user_vocab.mastery_level + 1)
         else:
             user_vocab.mastery_level = max(0, user_vocab.mastery_level - 1)
-        
+
         user_vocab.last_reviewed = timezone.now()
         # Calculate next review based on spaced repetition algorithm
         interval = 2 ** user_vocab.mastery_level  # days
         user_vocab.next_review = timezone.now() + timezone.timedelta(days=interval)
         user_vocab.save()
-        
+
         serializer = self.get_serializer(user_vocab)
-        return Response(serializer.data)
+        return Response(
+            convert_response(
+                message='Review recorded successfully',
+                status_code=status.HTTP_200_OK,
+                data=serializer.data
+            ),
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=False, methods=['POST'])
     def review_word(self, request):
         vocab_id = request.data.get('vocabulary_id')
         is_correct = request.data.get('is_correct', False)
         if not vocab_id:
-            return Response({'error': 'vocabulary_id is required'}, status=400)
+            return Response(
+                convert_response(
+                    message='vocabulary_id is required',
+                    status_code=status.HTTP_400_BAD_REQUEST
+                ),
+                status=status.HTTP_400_BAD_REQUEST
+            )
         user_vocab, _ = UserVocabulary.objects.get_or_create(
             user=request.user, vocabulary_id=vocab_id
         )
@@ -191,4 +258,11 @@ class UserVocabularyViewSet(viewsets.ModelViewSet):
         user_vocab.next_review = timezone.now() + timezone.timedelta(days=interval)
         user_vocab.save()
         serializer = self.get_serializer(user_vocab)
-        return Response(serializer.data)
+        return Response(
+            convert_response(
+                message='Review recorded successfully',
+                status_code=status.HTTP_200_OK,
+                data=serializer.data
+            ),
+            status=status.HTTP_200_OK
+        )

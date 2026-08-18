@@ -158,10 +158,24 @@ class Command(BaseCommand):
                     'email': email,
                     'full_name': full_name,
                     'password': make_password('Student123!'),
+                    'role': Account.ROLE_STUDENT,
+                    'status': Account.STATUS_ACTIVE,
                 }
             )
 
-        self.stdout.write(f'  Created {len(users_data)} test users')
+        Account.objects.get_or_create(
+            username='ngocthao',
+            defaults={
+                'email': 'ngocthao@test.com',
+                'full_name': 'Ngọc Thảo',
+                'password': make_password('Teacher123!'),
+                'role': Account.ROLE_TEACHER,
+                'status': Account.STATUS_ACTIVE,
+                'is_staff': True,
+            },
+        )
+
+        self.stdout.write(f'  Created {len(users_data)} test students + teacher ngocthao')
 
     def create_vocabulary(self):
         """Create 100 vocabulary words"""

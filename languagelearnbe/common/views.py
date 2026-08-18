@@ -2,12 +2,13 @@ import os
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.conf import settings
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Count, Q
 from django.contrib.contenttypes.models import ContentType
 from common.mixins import StandardResultsSetPagination
+from general.general import convert_response
 from .models import Level, Topic, Progress, UserPreference
 from .serializers import (
     LevelSerializer, TopicSerializer,
@@ -40,7 +41,15 @@ class TopicViewSet(viewsets.ModelViewSet):
         """Return topics without a parent (root topics only)."""
         qs = Topic.objects.filter(parent__isnull=True)
         serializer = self.get_serializer(qs, many=True)
-        return Response(serializer.data)
+        return Response(
+            convert_response(
+                message='Root topics retrieved successfully',
+                status_code=status.HTTP_200_OK,
+                data=serializer.data,
+                count=len(serializer.data)
+            ),
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=True, methods=['get'], url_path='subtopics')
     def subtopics(self, request, pk=None):
@@ -48,7 +57,15 @@ class TopicViewSet(viewsets.ModelViewSet):
         topic = self.get_object()
         qs = Topic.objects.filter(parent=topic)
         serializer = self.get_serializer(qs, many=True)
-        return Response(serializer.data)
+        return Response(
+            convert_response(
+                message='Subtopics retrieved successfully',
+                status_code=status.HTTP_200_OK,
+                data=serializer.data,
+                count=len(serializer.data)
+            ),
+            status=status.HTTP_200_OK
+        )
 
 
 class ProgressViewSet(viewsets.ModelViewSet):
@@ -140,10 +157,17 @@ class ProgressViewSet(viewsets.ModelViewSet):
                 'sentence_count': counts.get('sentencestructure', 0) + counts.get('sentence', 0),
             }
 
-        return Response({
-            'stats': stats,
-            'recent_progress': recent,
-        })
+        return Response(
+            convert_response(
+                message='Dashboard stats retrieved successfully',
+                status_code=status.HTTP_200_OK,
+                data={
+                    'stats': stats,
+                    'recent_progress': recent,
+                }
+            ),
+            status=status.HTTP_200_OK
+        )
 
 
 def fixtures_test_view(request):
@@ -181,5 +205,19 @@ class UserPreferenceViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(pref, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data)
-        return Response(self.get_serializer(pref).data)
+            return Response(
+                convert_response(
+                    message='Preferences updated successfully',
+                    status_code=status.HTTP_200_OK,
+                    data=serializer.data
+                ),
+                status=status.HTTP_200_OK
+            )
+        return Response(
+            convert_response(
+                message='Preferences retrieved successfully',
+                status_code=status.HTTP_200_OK,
+                data=self.get_serializer(pref).data
+            ),
+            status=status.HTTP_200_OK
+        )

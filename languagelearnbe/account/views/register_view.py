@@ -51,6 +51,8 @@ class RegisterView(APIView):
                 password=password,
                 phone=phone,
                 full_name=full_name,
+                role=Account.ROLE_STUDENT,
+                status=Account.STATUS_PENDING,
             )
             serializer = AccountSerializer(user)
             return Response(

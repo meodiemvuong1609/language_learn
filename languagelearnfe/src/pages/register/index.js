@@ -47,6 +47,7 @@ export default function RegisterPage() {
       if (res.data.code === 200) {
         // Auto login after register
         await dispatch(login({ username, password })).unwrap();
+        addToast('Đăng ký thành công. Tài khoản đang chờ cô duyệt.', 'success');
         router.push('/dashboard');
       } else {
         addToast(res.data.message || 'Đăng ký thất bại', 'error');
@@ -57,13 +58,13 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold text-center text-gray-900">
+    <div className="flex items-center justify-center min-h-screen auth-canvas p-4">
+      <div className="w-full max-w-md p-8 space-y-6 border" style={{ background: 'var(--surface-primary)', borderColor: 'var(--line)' }}>
+        <h2 className="text-3xl font-bold text-center">
           Tạo tài khoản
         </h2>
-        <p className="text-sm text-center text-gray-600">
-          Tham gia ngay để bắt đầu học tiếng Anh
+        <p className="text-sm text-center" style={{ color: 'var(--muted)' }}>
+          Đăng ký học IELTS. Cô Ngọc Thảo sẽ duyệt tài khoản trước khi vào lớp.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -77,7 +78,7 @@ export default function RegisterPage() {
               onChange={(e) => setUsername(e.target.value)}
               required
               placeholder="Chọn tên đăng nhập"
-              className="block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="block w-full px-4 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--moss)]"
             />
           </div>
 
@@ -91,7 +92,7 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="Nhập email của bạn"
-              className="block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="block w-full px-4 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--moss)]"
             />
           </div>
 
@@ -105,7 +106,7 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Tạo mật khẩu (ít nhất 8 ký tự)"
-              className="block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="block w-full px-4 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--moss)]"
             />
           </div>
 
@@ -119,7 +120,7 @@ export default function RegisterPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               placeholder="Nhập lại mật khẩu"
-              className="block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="block w-full px-4 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--moss)]"
             />
           </div>
 
@@ -130,10 +131,10 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 text-white font-semibold rounded-md shadow-md transition-all ${
+            className={`w-full py-3 text-white font-semibold transition-all ${
               loading
-                ? 'bg-blue-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
+                ? 'bg-stamp/60 cursor-not-allowed'
+                : 'bg-stamp hover:bg-[#8f1c14]'
             }`}
           >
             {loading ? 'Đang tạo tài khoản...' : 'Đăng ký'}
@@ -143,7 +144,7 @@ export default function RegisterPage() {
         <div className="text-center">
           <p className="text-sm text-gray-600">
             Đã có tài khoản?{' '}
-            <Link href="/login" className="text-blue-500 hover:underline">
+            <Link href="/login" className="text-moss hover:underline">
               Đăng nhập
             </Link>
           </p>

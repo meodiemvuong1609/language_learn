@@ -5,6 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 from common.mixins import StandardResultsSetPagination
 from common.grading import answers_match
+from general.general import convert_response
 from .models import AudioLesson, ListeningExercise, UserListeningProgress, ListeningExerciseAttempt
 from .serializers import (
     AudioLessonSerializer, ListeningExerciseSerializer,
@@ -68,12 +69,19 @@ class ListeningExerciseViewSet(viewsets.ModelViewSet):
             progress.completed = True
             progress.completion_date = timezone.now()
             progress.save()
-        return Response({
-            'is_correct': is_correct,
-            'correct_answer': exercise.correct_answer if True else None,
-            'explanation': exercise.explanation,
-            'attempt': ListeningExerciseAttemptSerializer(attempt, context={'request': request}).data,
-        }, status=status.HTTP_200_OK)
+        return Response(
+            convert_response(
+                message='Answer submitted successfully',
+                status_code=status.HTTP_200_OK,
+                data={
+                    'is_correct': is_correct,
+                    'correct_answer': exercise.correct_answer if True else None,
+                    'explanation': exercise.explanation,
+                    'attempt': ListeningExerciseAttemptSerializer(attempt, context={'request': request}).data,
+                }
+            ),
+            status=status.HTTP_200_OK
+        )
 
 
 class UserListeningProgressViewSet(viewsets.ModelViewSet):
@@ -96,18 +104,32 @@ class UserListeningProgressViewSet(viewsets.ModelViewSet):
         acc = 0
         if attempts.exists():
             acc = attempts.filter(is_correct=True).count() / attempts.count() * 100
-        return Response({
-            'total_lessons': total,
-            'completed': completed,
-            'accuracy': round(acc, 2),
-        })
+        return Response(
+            convert_response(
+                message='Statistics retrieved successfully',
+                status_code=status.HTTP_200_OK,
+                data={
+                    'total_lessons': total,
+                    'completed': completed,
+                    'accuracy': round(acc, 2),
+                }
+            ),
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=True, methods=['post'])
     def toggle_favorite(self, request, pk=None):
         progress = self.get_object()
         progress.favorite = not progress.favorite
         progress.save()
-        return Response({'favorite': progress.favorite})
+        return Response(
+            convert_response(
+                message='Favorite toggled successfully',
+                status_code=status.HTTP_200_OK,
+                data={'favorite': progress.favorite}
+            ),
+            status=status.HTTP_200_OK
+        )
 
 
 class ListeningExerciseAttemptViewSet(viewsets.ModelViewSet):

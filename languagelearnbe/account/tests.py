@@ -32,7 +32,9 @@ class AccountAPITest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('data', response.data)
         self.assertEqual(response.data['data']['username'], 'newuser')
-        self.assertTrue(Account.objects.filter(username='newuser').exists())
+        user = Account.objects.get(username='newuser')
+        self.assertEqual(user.role, Account.ROLE_STUDENT)
+        self.assertEqual(user.status, Account.STATUS_PENDING)
 
     def test_register_duplicate_username(self):
         Account.objects.create_user(username='dup', email='dup@example.com', password='pass123')
@@ -123,6 +125,8 @@ class AccountAPITest(TestCase):
     def test_forgot_password_missing_email(self):
         response = self.client.post('/api/auth/forgot-password/', {}, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['code'], status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['message'], 'Email is required')
 
     # ------------------- Reset Password -------------------
     def test_reset_password_valid_token(self):

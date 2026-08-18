@@ -21,8 +21,8 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex items-center justify-center auth-canvas p-4">
+      <div className="w-full max-w-md border p-8" style={{ background: 'var(--surface-primary)', borderColor: 'var(--line)' }}>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Quên mật khẩu</h1>
         <p className="text-sm text-gray-500 mb-6">Nhập email tài khoản để nhận link đặt lại.</p>
         {sent ? (
@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
             <button type="submit" className="btn btn-primary w-full">Gửi hướng dẫn</button>
           </form>
         )}
-        <Link href="/login" className="block mt-6 text-sm text-blue-600">← Quay lại đăng nhập</Link>
+        <Link href="/login" className="block mt-6 text-sm text-moss">← Quay lại đăng nhập</Link>
       </div>
     </div>
   );

@@ -1,0 +1,134 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "languagelearnbe/**"
+      - "languagelearnfe/**"
+      - ".github/workflows/deploy.yml"
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Update BE / FE on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect BE / FE changes
+        id: changes
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            echo "be=true" >> "$GITHUB_OUTPUT"
+            echo "fe=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          CHANGED="$(git diff --name-only "$BEFORE" "$GITHUB_SHA" || true)"
+          echo "$CHANGED"
+          {
+            echo "be=false"
+            echo "fe=false"
+          } >> "$GITHUB_OUTPUT"
+          echo "$CHANGED" | grep -qE '^(languagelearnbe/|\.github/workflows/deploy\.yml)' && echo "be=true" >> "$GITHUB_OUTPUT" || true
+          echo "$CHANGED" | grep -qE '^(languagelearnfe/|\.github/workflows/deploy\.yml)' && echo "fe=true" >> "$GITHUB_OUTPUT" || true
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.2
+        env:
+          UPDATE_BE: ${{ steps.changes.outputs.be }}
+          UPDATE_FE: ${{ steps.changes.outputs.fe }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT || 24700 }}
+          command_timeout: 25m
+          script_stop: true
+          envs: UPDATE_BE,UPDATE_FE
+          script: |
+            set -euo pipefail
+            APP_DIR="/root/ngocthao-ielts"
+
+            echo "==> Sync code"
+            cd "$APP_DIR"
+            git fetch origin master
+            git status --short || true
+
+            BACKUP_DIR="$(mktemp -d /tmp/ngocthao-env.XXXXXX)"
+            for envfile in .env languagelearnbe/.env languagelearnfe/.env languagelearnfe/.env.local; do
+              if [ -f "$APP_DIR/$envfile" ]; then
+                mkdir -p "$BACKUP_DIR/$(dirname "$envfile")"
+                cp -a "$APP_DIR/$envfile" "$BACKUP_DIR/$envfile"
+                echo "Đã backup $envfile"
+              fi
+            done
+
+            git reset --hard origin/master
+            git clean -fd \
+              -e .env \
+              -e languagelearnbe/.env \
+              -e languagelearnfe/.env \
+              -e languagelearnfe/.env.local \
+              -e languagelearnbe/env \
+              -e languagelearnbe/venv \
+              -e languagelearnbe/staticfiles \
+              -e languagelearnbe/media \
+              -e languagelearnfe/node_modules \
+              -e languagelearnfe/.next
+
+            for envfile in .env languagelearnbe/.env languagelearnfe/.env languagelearnfe/.env.local; do
+              if [ -f "$BACKUP_DIR/$envfile" ]; then
+                cp -a "$BACKUP_DIR/$envfile" "$APP_DIR/$envfile"
+                echo "Đã giữ $envfile production"
+              fi
+            done
+            rm -rf "$BACKUP_DIR"
+
+            if [ "${UPDATE_BE}" = "true" ]; then
+              echo "==> Update backend"
+              cd "$APP_DIR/languagelearnbe"
+              if [ -f env/bin/activate ]; then
+                # shellcheck disable=SC1091
+                source env/bin/activate
+              elif [ -f venv/bin/activate ]; then
+                # shellcheck disable=SC1091
+                source venv/bin/activate
+              else
+                echo "Không tìm thấy virtualenv (env/ hoặc venv/)"
+                exit 1
+              fi
+              pip install -r requirements.txt
+              python manage.py migrate --noinput
+              python manage.py collectstatic --noinput
+              systemctl restart gunicorn-ielts.service
+              systemctl is-active --quiet gunicorn-ielts.service
+              echo "Backend OK"
+            else
+              echo "==> Bỏ qua backend (không đổi)"
+            fi
+
+            if [ "${UPDATE_FE}" = "true" ]; then
+              echo "==> Update frontend"
+              cd "$APP_DIR/languagelearnfe"
+              if [ -f yarn.lock ]; then
+                yarn install --frozen-lockfile
+              else
+                yarn install
+              fi
+              yarn build
+              systemctl restart nextjs-ielts.service
+              systemctl is-active --quiet nextjs-ielts.service
+              echo "Frontend OK"
+            else
+              echo "==> Bỏ qua frontend (không đổi)"
+            fi
+
+            echo "==> Deploy xong"

@@ -97,7 +97,7 @@ class ListeningExerciseViewSetTest(TestCase):
             {'answer': 'hello', 'time_taken': 10}, format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data['is_correct'])
+        self.assertTrue(response.data['data']['is_correct'])
 
     def test_submit_answer_incorrect(self):
         self.client.force_authenticate(user=self.user)
@@ -106,7 +106,7 @@ class ListeningExerciseViewSetTest(TestCase):
             {'answer': 'world', 'time_taken': 15}, format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(response.data['is_correct'])
+        self.assertFalse(response.data['data']['is_correct'])
 
     def test_submit_answer_missing_fields(self):
         self.client.force_authenticate(user=self.user)
@@ -140,7 +140,7 @@ class UserListeningProgressViewSetTest(TestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/api/listening-progress/statistics/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        data = response.data
+        data = response.data['data']
         self.assertIn('total_lessons', data)
         self.assertIn('accuracy', data)
 

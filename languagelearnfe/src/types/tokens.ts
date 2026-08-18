@@ -1,12 +1,17 @@
 export const colors = {
   primary: {
-    50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
-    400: '#60A5FA', 500: '#3B82F6', 600: '#2563EB', 700: '#1D4ED8',
-    800: '#1E40AF', 900: '#1E3A8A',
+    50: '#e8efe9', 100: '#d4e4dc', 200: '#b3d0c4', 300: '#7eae9d',
+    400: '#4d8876', 500: '#1f5c4e', 600: '#1f5c4e', 700: '#164239',
+    800: '#152238', 900: '#152238',
   },
   secondary: {
-    300: '#C4B5FD', 400: '#A78BFA', 500: '#8B5CF6', 600: '#7C3AED', 700: '#6D28D9',
+    300: '#b3d0c4', 400: '#4d8876', 500: '#1f5c4e', 600: '#1f5c4e', 700: '#164239',
   },
+  stamp: { 500: '#b42318', 700: '#8f1c14' },
+  ink: '#152238',
+  paper: '#f7f4ee',
+  cue: '#fff6e8',
+  moss: '#1f5c4e',
   accent: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' },
   success: { 50: '#ecfdf5', 100: '#d1fae5', 500: '#10b981', 600: '#059669' },
   error: {
@@ -14,16 +19,20 @@ export const colors = {
     400: '#F87171', 500: '#EF4444', 600: '#DC2626',
   },
   gray: {
-    50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1',
-    400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155',
-    800: '#1e293b', 900: '#0f172a',
+    50: '#f7f4ee', 100: '#efe8dc', 200: '#d8cebf', 300: '#c4b8a6',
+    400: '#9a9084', 500: '#6b645b', 600: '#4a453f', 700: '#3d3a37',
+    800: '#2c2a28', 900: '#152238',
   },
-  background: '#ffffff',
-  foreground: '#1e293b',
+  background: '#f7f4ee',
+  foreground: '#2c2a28',
 };
 
 export const typography = {
-  fontFamily: { sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" },
+  fontFamily: {
+    sans: 'Figtree, system-ui, sans-serif',
+    display: 'Literata, Georgia, serif',
+    mono: "'IBM Plex Mono', ui-monospace, monospace",
+  },
   fontSize: { xs: '0.75rem', sm: '0.875rem', base: '1rem', lg: '1.125rem', xl: '1.25rem', '2xl': '1.5rem', '3xl': '1.875rem', '4xl': '2.25rem' },
   fontWeight: { normal: '400', medium: '500', semibold: '600', bold: '700' },
   lineHeight: { tight: '1.25', normal: '1.5', relaxed: '1.625', loose: '2' },

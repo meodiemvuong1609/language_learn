@@ -42,17 +42,17 @@ class LearningLoopAPITest(TestCase):
         )
         res = self.client.post(f'/api/listening-exercises/{ex.id}/submit_answer/', {'answer': 'b'}, format='json')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertFalse(res.data['is_correct'])
+        self.assertFalse(res.data['data']['is_correct'])
 
     def test_quiz_submit_retake(self):
         quiz = Quiz.objects.create(title='Q', passing_score=50, is_published=True, order=1)
         q = Question.objects.create(quiz=quiz, question_text='2+2', options={'a': '4', 'b': '3'}, correct_answer='a', order=1)
         r1 = self.client.post(f'/api/quizzes/{quiz.id}/submit/', {'answers': {str(q.id): 'a'}}, format='json')
         self.assertEqual(r1.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(r1.data['passed'])
+        self.assertTrue(r1.data['data']['passed'])
         r2 = self.client.post(f'/api/quizzes/{quiz.id}/submit/', {'answers': {str(q.id): 'b'}}, format='json')
         self.assertEqual(r2.status_code, status.HTTP_201_CREATED)
-        self.assertFalse(r2.data['passed'])
+        self.assertFalse(r2.data['data']['passed'])
 
     def test_reading_submit(self):
         lesson = ReadingLesson.objects.create(title='R', content='hello', is_published=True, order=1)
@@ -65,7 +65,7 @@ class LearningLoopAPITest(TestCase):
             format='json',
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data['correct'], 1)
+        self.assertEqual(res.data['data']['correct'], 1)
 
     def test_sentence_submit(self):
         s = SentenceStructure.objects.create(pattern='SVO', formula='S+V+O', description='d', is_published=True)
@@ -76,17 +76,17 @@ class LearningLoopAPITest(TestCase):
             format='json',
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data['correct'], 1)
+        self.assertEqual(res.data['data']['correct'], 1)
 
     def test_preferences_me_dark_mode(self):
         res = self.client.get('/api/preferences/me/')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertFalse(res.data['dark_mode'])
+        self.assertFalse(res.data['data']['dark_mode'])
         patched = self.client.patch(
             '/api/preferences/me/',
             {'dark_mode': True, 'daily_goal': 45},
             format='json',
         )
         self.assertEqual(patched.status_code, status.HTTP_200_OK)
-        self.assertTrue(patched.data['dark_mode'])
-        self.assertEqual(patched.data['daily_goal'], 45)
+        self.assertTrue(patched.data['data']['dark_mode'])
+        self.assertEqual(patched.data['data']['daily_goal'], 45)
