@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.utils import timezone
 from common.mixins import StandardResultsSetPagination
 from common.grading import answers_match
+from general.general import convert_response
 from .models import Quiz, Question, UserQuizAttempt
 from .serializers import QuizSerializer, QuestionSerializer, UserQuizAttemptSerializer
 
@@ -57,14 +58,21 @@ class QuizViewSet(viewsets.ModelViewSet):
             completed_at=timezone.now(),
             is_completed=True,
         )
-        return Response({
-            'attempt_id': attempt.id,
-            'correct': int(score),
-            'total': len(questions),
-            'percentage': percentage,
-            'passed': passed,
-            'results': results,
-        }, status=status.HTTP_201_CREATED)
+        return Response(
+            convert_response(
+                message='Quiz submitted successfully',
+                status_code=status.HTTP_201_CREATED,
+                data={
+                    'attempt_id': attempt.id,
+                    'correct': int(score),
+                    'total': len(questions),
+                    'percentage': percentage,
+                    'passed': passed,
+                    'results': results,
+                }
+            ),
+            status=status.HTTP_201_CREATED
+        )
 
 
 class QuestionViewSet(viewsets.ModelViewSet):

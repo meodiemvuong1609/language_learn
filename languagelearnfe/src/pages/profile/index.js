@@ -5,17 +5,18 @@ import DefaultLayout from '@/components/layout/DefaultLayout';
 import { getMe } from '@/store/authSlice';
 import { api } from '@/services/api';
 import LoadingIndicator from '@/components/LoadingIndicator';
-import { useTheme } from '@/components/ThemeProvider';
+import { useLogout } from '@/lib/useLogout';
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
+  const handleLogout = useLogout();
   const { user } = useSelector((state) => state.auth);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ full_name: '', email: '', phone: '', birthday: '' });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
-  const { dark, setDark } = useTheme();
   const [dailyGoal, setDailyGoal] = useState(30);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
@@ -135,20 +136,6 @@ export default function ProfilePage() {
               type="date"
             />
 
-            <div className="flex items-center justify-between p-4 rounded-lg" style={{ background: 'var(--gray-50)' }}>
-              <div>
-                <p className="text-sm font-semibold" style={{ color: 'var(--gray-700)' }}>Chế độ tối</p>
-                <p className="text-xs" style={{ color: 'var(--gray-500)' }}>Đồng bộ với tài khoản</p>
-              </div>
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() => setDark(!dark)}
-              >
-                {dark ? 'Đang bật' : 'Đang tắt'}
-              </button>
-            </div>
-
             <div>
               <label className="block text-sm font-semibold mb-1.5" style={{ color: 'var(--gray-700)' }}>
                 Mục tiêu học mỗi ngày (phút)
@@ -175,7 +162,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Actions */}
-          <div className="p-6 border-t flex justify-end gap-3" style={{ borderColor: 'var(--gray-100)' }}>
+          <div className="p-6 border-t flex flex-wrap justify-end gap-3" style={{ borderColor: 'var(--gray-100)' }}>
             {editing ? (
               <>
                 <button onClick={() => setEditing(false)} className="btn btn-secondary">Hủy</button>
@@ -184,12 +171,17 @@ export default function ProfilePage() {
                 </button>
               </>
             ) : (
-              <button onClick={() => setEditing(true)} className="btn btn-primary">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                Chỉnh sửa
-              </button>
+              <>
+                <button type="button" onClick={handleLogout} className="btn btn-secondary">
+                  Đăng xuất
+                </button>
+                <button onClick={() => setEditing(true)} className="btn btn-primary">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Chỉnh sửa
+                </button>
+              </>
             )}
           </div>
         </div>

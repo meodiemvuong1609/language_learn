@@ -65,7 +65,7 @@ export default function VocabularyReviewPage() {
           <p className="text-lg text-gray-700 mb-8">Tỷ lệ: {pct}%</p>
           <button
             onClick={() => { setCurrent(0); setFinished(false); setStats({ total: 0, correct: 0, incorrect: 0 }); }}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+            className="btn btn-primary"
           >
             Làm lại
           </button>
@@ -88,7 +88,7 @@ export default function VocabularyReviewPage() {
 
         {/* Progress bar */}
         <div className="w-full bg-gray-200 rounded-full h-2 mb-8">
-          <div className="bg-blue-600 h-2 rounded-full transition-all" style={{ width: `${((current) / cards.length) * 100}%` }} />
+          <div className="bg-stamp h-2 rounded-full transition-all" style={{ width: `${((current) / cards.length) * 100}%` }} />
         </div>
 
         {/* Flashcard */}
@@ -100,7 +100,7 @@ export default function VocabularyReviewPage() {
             <>
               <p className="text-3xl font-bold text-gray-900 mb-4">{card.word}</p>
               {card.phonetic && <p className="text-gray-500 italic mb-2">{card.phonetic}</p>}
-              {card.part_of_speech && <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">{card.part_of_speech}</span>}
+              {card.part_of_speech && <span className="px-2 py-1 text-xs" style={{ background: 'var(--mist)', color: 'var(--ink)' }}>{card.part_of_speech}</span>}
               <p className="text-gray-400 mt-6 text-sm">👆 Click để xem đáp án</p>
             </>
           ) : (

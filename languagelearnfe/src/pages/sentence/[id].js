@@ -45,7 +45,7 @@ export default function SentenceDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Link href="/sentence" className="text-blue-600 hover:underline mb-4 inline-block">
+        <Link href="/sentence" className="text-moss hover:underline mb-4 inline-block">
           ← Quay lại danh sách
         </Link>
 
@@ -66,14 +66,14 @@ export default function SentenceDetailPage() {
           )}
 
           {data.grammar_notes && (
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-blue-900 mb-2">📖 Ghi chú ngữ pháp</h3>
-              <p className="text-blue-800 text-sm">{data.grammar_notes}</p>
+            <div className="p-4 rounded-lg" style={{ background: 'var(--mist)' }}>
+              <h3 className="font-semibold mb-2">Ghi chú ngữ pháp</h3>
+              <p className="text-sm">{data.grammar_notes}</p>
             </div>
           )}
 
           {data.level_details && (
-            <span className="inline-block mt-4 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded">
+            <span className="inline-block mt-4 px-3 py-1 text-sm" style={{ background: 'var(--mist)', color: 'var(--ink)' }}>
               {data.level_details.name} ({data.level_details.code})
             </span>
           )}
@@ -119,13 +119,13 @@ export default function SentenceDetailPage() {
                       value={answers[item.id] || ''}
                       onChange={(e) => setAnswers({ ...answers, [item.id]: e.target.value })}
                       placeholder="Nhập đáp án..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[var(--moss)]"
                     />
                   </div>
                 ))}
                 <button
                   onClick={handleSubmit}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium mt-4"
+                  className="w-full btn btn-primary mt-4"
                 >
                   Nộp bài
                 </button>

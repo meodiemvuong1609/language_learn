@@ -238,7 +238,7 @@ export default function FlashcardStudyPage() {
         <div className="w-full h-2 rounded-full mb-8" style={{ background: 'var(--gray-200)' }}>
           <div
             className="h-2 rounded-full transition-all duration-500 ease-out"
-            style={{ width: `${progress}%`, background: 'linear-gradient(90deg, var(--primary-500), #7c3aed)' }}
+            style={{ width: `${progress}%`, background: 'var(--stamp)' }}
           />
         </div>
 

@@ -19,7 +19,7 @@ const sizeMap: Record<Size, { h: number; fs: number }> = {
 }
 
 const variantColor: Record<Variant, string> = {
-  primary: 'var(--primary-500, #3B82F6)',
+  primary: 'var(--stamp, #B42318)',
   success: 'var(--success-500, #10b981)',
   warning: 'var(--accent-500, #f59e0b)',
   danger: 'var(--error-500, #EF4444)',

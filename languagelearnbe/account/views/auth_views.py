@@ -25,6 +25,11 @@ class LoginView(APIView):
             user = Account.objects.get(username=username)
 
             if user.check_password(password):
+                if user.status == Account.STATUS_REJECTED and not user.is_teacher:
+                    return Response(
+                        convert_response("Tài khoản chưa được duyệt", 403),
+                        status=status.HTTP_403_FORBIDDEN
+                    )
                 token, created = Token.objects.get_or_create(user=user)
                 return Response(
                     convert_response("Success", 200, token.key),

@@ -48,7 +48,7 @@ export default function ReadingDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Link href="/reading" className="text-blue-600 hover:underline mb-4 inline-block">
+        <Link href="/reading" className="text-moss hover:underline mb-4 inline-block">
           ← Quay lại danh sách
         </Link>
 
@@ -68,7 +68,7 @@ export default function ReadingDetailPage() {
               <div key={para.id} className="mb-6">
                 <p className="text-gray-800 text-lg leading-relaxed">{para.content}</p>
                 {para.translation && (
-                  <p className="text-gray-500 text-sm mt-2 italic border-l-4 border-blue-200 pl-3">{para.translation}</p>
+                  <p className="text-gray-500 text-sm mt-2 italic border-l-4 border-[var(--line)] pl-3">{para.translation}</p>
                 )}
               </div>
             ))}

@@ -51,7 +51,7 @@ export default function ListeningDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Link href="/listening" className="text-blue-600 hover:underline mb-4 inline-block">← Quay lại danh sách</Link>
+        <Link href="/listening" className="text-moss hover:underline mb-4 inline-block">← Quay lại danh sách</Link>
 
         {/* Audio Player */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">
@@ -71,7 +71,7 @@ export default function ListeningDetailPage() {
             )}
           </div>
           {data.level_details && (
-            <span className="inline-block mt-4 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded">
+            <span className="inline-block mt-4 px-3 py-1 text-sm" style={{ background: 'var(--mist)', color: 'var(--ink)' }}>
               {data.level_details.name} ({data.level_details.code})
             </span>
           )}
@@ -128,7 +128,7 @@ export default function ListeningDetailPage() {
               <button
                 onClick={handleSubmit}
                 disabled={Object.keys(answers).length !== exercises.length}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium disabled:opacity-50"
+                className="w-full btn btn-primary disabled:opacity-50"
               >
                 Nộp bài ({Object.keys(answers).length}/{exercises.length})
               </button>

@@ -27,8 +27,8 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex items-center justify-center auth-canvas p-4">
+      <div className="w-full max-w-md border p-8" style={{ background: 'var(--surface-primary)', borderColor: 'var(--line)' }}>
         <h1 className="text-2xl font-bold text-gray-900 mb-4">Đặt lại mật khẩu</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -42,7 +42,7 @@ export default function ResetPasswordPage() {
           />
           <button type="submit" className="btn btn-primary w-full">Lưu mật khẩu</button>
         </form>
-        <Link href="/login" className="block mt-6 text-sm text-blue-600">← Đăng nhập</Link>
+        <Link href="/login" className="block mt-6 text-sm text-moss">← Đăng nhập</Link>
       </div>
     </div>
   );

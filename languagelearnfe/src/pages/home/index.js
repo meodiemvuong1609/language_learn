@@ -15,67 +15,31 @@ export default function HomePage() {
   }, [token, router]);
 
   return (
-    <div className="min-h-screen gradient-login flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute top-[-10%] right-[-5%] w-72 h-72 bg-white/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-[-15%] left-[-10%] w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
-
-      <div className="max-w-5xl w-full relative z-10">
-        {/* Hero */}
-        <div className="text-center mb-16 animate-fade-in-up">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-2xl mb-6 backdrop-blur-sm">
-            <span className="text-4xl">🌍</span>
-          </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight mb-4">
-            LanguageLearn
-          </h1>
-          <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
-            Nền tảng học tiếng Anh toàn diện với từ vựng, nghe, nói, đọc hiểu và ngữ pháp.
-            Bắt đầu hành trình của bạn ngay hôm nay.
-          </p>
-        </div>
-
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {[
-            { icon: '📚', title: 'Từ vựng thông minh', desc: 'Học từ vựng với thuật toán spaced repetition giúp bạn nhớ lâu hơn.', color: 'blue' },
-            { icon: '🎧', title: 'Luyện nghe chuyên sâu', desc: 'Nghe các đoạn hội thoại và bài học giúp cải thiện kỹ năng nghe.', color: 'green' },
-            { icon: '🎤', title: 'Luyện nói tự nhiên', desc: 'Thu âm và nhận phản hồi chi tiết về phát âm và ngữ điệu.', color: 'purple' },
-            { icon: '📖', title: 'Đọc hiểu nâng cao', desc: 'Đọc các bài học phù hợp trình độ và kiểm tra hiểu biết của bạn.', color: 'emerald' },
-            { icon: '✍️', title: 'Ngữ pháp thực hành', desc: 'Nắm vững cấu trúc câu thông qua các bài tập thực tế.', color: 'yellow' },
-            { icon: '🗂️', title: 'Flashcard thông minh', desc: 'Tạo bộ thẻ cá nhân và học với hệ thống ôn tập tự động.', color: 'orange' },
-          ].map((feature, idx) => (
-            <div
-              key={feature.title}
-              className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all animate-fade-in"
-              style={{ animationDelay: `${idx * 80}ms` }}
-            >
-              <div className="text-3xl mb-3">{feature.icon}</div>
-              <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
-              <p className="text-white/60 text-sm leading-relaxed">{feature.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* CTA */}
-        <div className="text-center animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-          <Link
-            href="/login"
-            className="inline-block bg-white text-indigo-600 px-8 py-3.5 rounded-xl font-bold shadow-lg hover:bg-gray-100 hover:shadow-xl transition-all mr-4"
-          >
+    <div className="min-h-screen auth-canvas flex items-center justify-center p-6">
+      <div className="max-w-3xl w-full text-center">
+        <p className="inline-block font-plex text-[11px] tracking-[0.14em] uppercase border border-ink text-ink px-2 py-1 mb-6" style={{ boxShadow: '2px 2px 0 var(--ink)' }}>
+          cue
+        </p>
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+          Ngọc Thảo IELTS
+        </h1>
+        <p className="text-lg max-w-xl mx-auto leading-relaxed mb-10" style={{ color: 'var(--muted)' }}>
+          Luyện IELTS online từ Thanh Hóa — Speaking cue card, Writing Task 2,
+          lộ trình cho học sinh THPT và sinh viên.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <Link href="/login" className="btn btn-primary btn-lg">
             Đăng nhập
           </Link>
-          <Link
-            href="/register"
-            className="inline-block bg-indigo-700/80 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg hover:bg-indigo-800/80 transition-all backdrop-blur-sm"
-          >
-            Đăng ký miễn phí
+          <Link href="/register" className="ll-btn ll-btn-ghost" style={{ minHeight: 48, padding: '0 28px' }}>
+            Đăng ký
+          </Link>
+          <Link href="/" className="text-sm" style={{ color: 'var(--moss)' }}>
+            Trang giới thiệu
           </Link>
         </div>
-
-        {/* Footer */}
-        <p className="text-center text-white/30 text-xs mt-12">
-          © {new Date().getFullYear()} LanguageLearn. All rights reserved.
+        <p className="text-xs mt-12" style={{ color: 'var(--muted)' }}>
+          © {new Date().getFullYear()} Ngọc Thảo IELTS
         </p>
       </div>
     </div>

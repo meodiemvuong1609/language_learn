@@ -109,7 +109,7 @@ export default function SpeakingDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Link href="/speaking" className="text-blue-600 hover:underline mb-4 inline-block">← Quay lại danh sách</Link>
+        <Link href="/speaking" className="text-moss hover:underline mb-4 inline-block">← Quay lại danh sách</Link>
 
         {/* Lesson header */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">
@@ -117,7 +117,7 @@ export default function SpeakingDetailPage() {
           {data.description && <p className="text-gray-600 mb-4">{data.description}</p>}
           <div className="flex items-center space-x-4">
             {data.level_details && (
-              <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded">
+              <span className="px-3 py-1 text-sm" style={{ background: 'var(--mist)', color: 'var(--ink)' }}>
                 {data.level_details.name} ({data.level_details.code})
               </span>
             )}
@@ -147,8 +147,8 @@ export default function SpeakingDetailPage() {
                   onClick={() => setSelectedPattern(p)}
                   className={`p-4 rounded-lg border-2 text-left transition-all ${
                     selectedPattern?.id === p.id
-                      ? 'border-purple-500 bg-purple-50'
-                      : 'border-gray-200 hover:border-purple-300'
+                      ? 'border-stamp bg-[var(--mist)]'
+                      : 'border-gray-200 hover:border-moss'
                   }`}
                 >
                   <p className="font-mono font-semibold text-gray-900">{p.pattern}</p>
@@ -167,9 +167,9 @@ export default function SpeakingDetailPage() {
           <h2 className="text-xl font-semibold text-gray-900 mb-4">🎤 Luyện phát âm</h2>
 
           {selectedPattern && (
-            <div className="mb-4 p-4 bg-purple-50 rounded-lg">
-              <p className="font-mono text-lg font-semibold text-purple-900">{selectedPattern.pattern}</p>
-              {selectedPattern.description && <p className="text-sm text-purple-700 mt-1">{selectedPattern.description}</p>}
+            <div className="mb-4 p-4 rounded-lg" style={{ background: 'var(--mist)' }}>
+              <p className="font-mono text-lg font-semibold">{selectedPattern.pattern}</p>
+              {selectedPattern.description && <p className="text-sm mt-1" style={{ color: 'var(--moss)' }}>{selectedPattern.description}</p>}
             </div>
           )}
 
@@ -179,7 +179,7 @@ export default function SpeakingDetailPage() {
                 {!recording ? (
                   <button
                     onClick={startRecording}
-                    className="inline-flex items-center px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white text-lg rounded-full font-medium shadow-lg"
+                    className="inline-flex items-center px-8 py-4 bg-stamp hover:bg-[#8f1c14] text-white text-lg font-medium"
                   >
                     <span className="text-2xl mr-2">🎙️</span> Bắt đầu ghi âm
                   </button>
@@ -211,7 +211,7 @@ export default function SpeakingDetailPage() {
                     />
                     <button
                       onClick={handleSubmit}
-                      className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-medium mr-3"
+                      className="btn btn-primary mr-3"
                     >
                       📤 Gửi phát âm
                     </button>
@@ -228,7 +228,7 @@ export default function SpeakingDetailPage() {
                     <p className="mt-1">{score.feedback}</p>
                     <button
                       onClick={() => { setAudioURL(null); setSubmitted(false); setScore(null); }}
-                      className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg"
+                      className="mt-4 btn btn-primary"
                     >
                       Luyện lại
                     </button>

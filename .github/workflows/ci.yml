@@ -42,7 +42,7 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - run: python manage.py check
-      - run: python manage.py test account common.tests common.tests_learning vocabulary flashcard question listening reading sentence speaking --verbosity=1
+      - run: python manage.py test account classroom common.tests common.tests_learning vocabulary flashcard question listening reading sentence speaking --verbosity=1
 
   frontend:
     runs-on: ubuntu-latest
@@ -56,11 +56,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: npm ci || npm install
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm run build
+          cache: yarn
+          cache-dependency-path: languagelearnfe/yarn.lock
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+      - run: yarn typecheck
+      - run: yarn test
+      - run: yarn build
 
   mobile:
     runs-on: ubuntu-latest
@@ -74,5 +76,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: npm ci || npm install
-      - run: npm test
+          cache: yarn
+          cache-dependency-path: languagelearn/yarn.lock
+      - run: yarn install --frozen-lockfile
+      - run: yarn test

@@ -13,7 +13,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ message = 'Äang táº
     <div style={{
       width: '36px', height: '36px',
       border: '3px solid var(--primary-200, #BFDBFE)',
-      borderTopColor: 'var(--primary-600, #2563EB)',
+      borderTopColor: 'var(--stamp, #B42318)',
       borderRadius: '50%',
       animation: 'spin 0.7s linear infinite',
     }} />

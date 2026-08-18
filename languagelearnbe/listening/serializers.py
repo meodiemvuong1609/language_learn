@@ -44,6 +44,10 @@ class AudioLessonSerializer(serializers.ModelSerializer):
                  'is_published', 'level_details', 'topics_details',
                  'exercises', 'progress', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
+        extra_kwargs = {
+            'audio': {'required': False, 'allow_null': True},
+            'transcript': {'required': False, 'allow_blank': True},
+        }
 
     def get_progress(self, obj):
         user = self.context.get('request').user if self.context.get('request') else None

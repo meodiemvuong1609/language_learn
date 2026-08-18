@@ -73,9 +73,9 @@ export default function VocabularyPage() {
 
   const getPOSColor = (pos) => {
     const colors = {
-      noun: { bg: 'var(--blue-50)', text: 'var(--blue-700)' },
+      noun: { bg: 'var(--mist)', text: 'var(--moss)' },
       verb: { bg: 'var(--green-50)', text: 'var(--green-700)' },
-      adjective: { bg: 'var(--purple-50)', text: 'var(--purple-700)' },
+      adjective: { bg: 'var(--cue)', text: 'var(--stamp)' },
       adverb: { bg: 'var(--orange-50)', text: 'var(--orange-700)' },
       preposition: { bg: 'var(--cyan-50)', text: 'var(--cyan-700)' },
       conjunction: { bg: 'var(--pink-50)', text: 'var(--pink-700)' },

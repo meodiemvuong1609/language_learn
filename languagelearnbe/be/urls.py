@@ -42,6 +42,13 @@ from sentence.views import SentenceStructureViewSet
 from reading.views import ReadingLessonViewSet, ReadingParagraphViewSet, ReadingComprehensionViewSet, UserReadingProgressViewSet
 from question.views import QuestionViewSet, QuizViewSet, UserQuizAttemptViewSet
 from flashcard.views import FlashcardDeckViewSet, FlashcardViewSet, UserFlashcardProgressViewSet
+from classroom.views import (
+    TeacherStudentViewSet,
+    CourseViewSet,
+    ClassGroupViewSet,
+    ClassSessionViewSet,
+    ClassroomDashboardView,
+)
 
 # Register quiz router
 quiz_router = routers.DefaultRouter()
@@ -110,6 +117,11 @@ router.register(r'flashcard-decks', FlashcardDeckViewSet, basename='flashcard-de
 router.register(r'flashcards', FlashcardViewSet, basename='flashcard')
 router.register(r'flashcard-progress', UserFlashcardProgressViewSet, basename='flashcard-progress')
 
+router.register(r'students', TeacherStudentViewSet, basename='students')
+router.register(r'courses', CourseViewSet, basename='courses')
+router.register(r'class-groups', ClassGroupViewSet, basename='class-groups')
+router.register(r'sessions', ClassSessionViewSet, basename='sessions')
+
 urlpatterns = [
   path('admin/', admin.site.urls),
   path('api/', include(router.urls)),
@@ -119,6 +131,7 @@ urlpatterns = [
   path('api/', include(quiz_router.urls)),
   # reading_router already registers routes — mount under api/
   path('api/', include(reading_router.urls)),
+  path('api/classroom/dashboard/', ClassroomDashboardView.as_view(), name='classroom-dashboard'),
   path('api/v1/fixtures-test/', fixtures_test_view, name='fixtures-test'),
   # Swagger URLs
   re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),

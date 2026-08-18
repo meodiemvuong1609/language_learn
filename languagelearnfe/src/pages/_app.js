@@ -7,6 +7,7 @@ import DefaultLayout from '../components/layout/DefaultLayout';
 import { ToastProvider } from '../components/Toast';
 import { ThemeProvider } from '../components/ThemeProvider';
 import ErrorBoundary from '../components/ErrorBoundary';
+import Head from 'next/head';
 import '@/styles/globals.css';
 
 export default function MyApp({ Component, pageProps }) {
@@ -28,6 +29,9 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <Provider store={store}>
+      <Head>
+        <title>Ngọc Thảo IELTS</title>
+      </Head>
       <ErrorBoundary>
         <ToastProvider>
           <ThemeProvider>{getLayout(<Component {...pageProps} />)}</ThemeProvider>

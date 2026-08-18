@@ -2,11 +2,11 @@ import { axiosInstance } from '@/store/axios';
 
 const API_BASE = '';
 
-// Unwrap backend {code, data, message} format for auth endpoints
-// DRF ViewSets return {count, results, ...} directly — pass through
+// Unwrap backend {code, data, message} envelope. DRF CRUD/list payloads
+// (including {count, results}) have no numeric code and pass through.
 function unwrap(data) {
   if (data && typeof data.code === 'number') {
-    if (data.code === 200) return data.data;
+    if (data.code >= 200 && data.code < 300) return data.data;
     throw new Error(data.message || 'Request failed');
   }
   return data;
@@ -36,7 +36,7 @@ export const api = {
   // ── Dashboard ───────────────────────────────────────
   getDashboardStats: async () => {
     const res = await axiosInstance.get(`${API_BASE}/progress/dashboard-stats/`);
-    return res.data;
+    return unwrap(res.data);
   },
   getProgress: async (params = {}) => {
     const res = await axiosInstance.get(`${API_BASE}/progress/`, { params });
@@ -44,11 +44,11 @@ export const api = {
   },
   getPreferences: async () => {
     const res = await axiosInstance.get(`${API_BASE}/preferences/me/`);
-    return res.data;
+    return unwrap(res.data);
   },
   updatePreferences: async (data) => {
     const res = await axiosInstance.patch(`${API_BASE}/preferences/me/`, data);
-    return res.data;
+    return unwrap(res.data);
   },
 
   // ── Vocabulary ──────────────────────────────────────
@@ -66,26 +66,26 @@ export const api = {
   },
   getUserVocabularyStats: async () => {
     const res = await axiosInstance.get(`${API_BASE}/user-vocabulary/statistics/`);
-    return res.data;
+    return unwrap(res.data);
   },
   getDueVocabulary: async () => {
     const res = await axiosInstance.get(`${API_BASE}/user-vocabulary/due_for_review/`);
-    return res.data;
+    return unwrap(res.data);
   },
   reviewWord: async (vocabularyId, isCorrect) => {
     const res = await axiosInstance.post(`${API_BASE}/user-vocabulary/review_word/`, {
       vocabulary_id: vocabularyId,
       is_correct: isCorrect,
     });
-    return res.data;
+    return unwrap(res.data);
   },
   forgotPassword: async (email) => {
     const res = await axiosInstance.post('/auth/forgot-password/', { email });
-    return res.data;
+    return unwrap(res.data);
   },
   resetPassword: async (payload) => {
     const res = await axiosInstance.post('/auth/reset-password/', payload);
-    return res.data;
+    return unwrap(res.data);
   },
   updateMe: async (data) => {
     const res = await axiosInstance.patch('/auth/me/', data);
@@ -102,7 +102,7 @@ export const api = {
   },
   submitListeningAnswer: async (exerciseId, answer) => {
     const res = await axiosInstance.post(`${API_BASE}/listening-exercises/${exerciseId}/submit_answer/`, { answer });
-    return res.data;
+    return unwrap(res.data);
   },
   getSpeakingLesson: async (id) => {
     const res = await axiosInstance.get(`${API_BASE}/speaking-lessons/${id}/`);
@@ -118,7 +118,7 @@ export const api = {
   },
   submitQuiz: async (quizId, answersData) => {
     const res = await axiosInstance.post(`${API_BASE}/quizzes/${quizId}/submit/`, answersData);
-    return res.data;
+    return unwrap(res.data);
   },
   getSentenceStructure: async (id) => {
     const res = await axiosInstance.get(`${API_BASE}/sentence-structures/${id}/`);
@@ -126,7 +126,7 @@ export const api = {
   },
   submitSentenceExercise: async (id, answers) => {
     const res = await axiosInstance.post(`${API_BASE}/sentence-structures/${id}/submit_exercise/`, { answers });
-    return res.data;
+    return unwrap(res.data);
   },
   getReadingLesson: async (id) => {
     const res = await axiosInstance.get(`${API_BASE}/reading-lessons/${id}/`);
@@ -134,7 +134,7 @@ export const api = {
   },
   submitReadingComprehension: async (id, answers) => {
     const res = await axiosInstance.post(`${API_BASE}/reading-lessons/${id}/submit_comprehension/`, { answers });
-    return res.data;
+    return unwrap(res.data);
   },
 
   // ── Listening ───────────────────────────────────────
@@ -210,11 +210,11 @@ export const api = {
   },
   addCardsToDeck: async (id, cards) => {
     const res = await axiosInstance.post(`${API_BASE}/flashcard-decks/${id}/add_cards/`, { cards });
-    return res.data;
+    return unwrap(res.data);
   },
   removeCardsFromDeck: async (id, cardIds) => {
     const res = await axiosInstance.delete(`${API_BASE}/flashcard-decks/${id}/remove_cards/`, { data: { card_ids: cardIds } });
-    return res.data;
+    return unwrap(res.data);
   },
   getMyFlashcardDecks: async (params = {}) => {
     const res = await axiosInstance.get(`${API_BASE}/flashcard-decks/my_decks/`, { params });
@@ -254,7 +254,7 @@ export const api = {
   },
   getFlashcardProgressStats: async () => {
     const res = await axiosInstance.get(`${API_BASE}/flashcard-progress/statistics/`);
-    return res.data;
+    return unwrap(res.data);
   },
   getDueFlashcards: async () => {
     const res = await axiosInstance.get(`${API_BASE}/flashcard-progress/due_for_review/`);
@@ -262,10 +262,104 @@ export const api = {
   },
   reviewFlashcard: async (id, isCorrect) => {
     const res = await axiosInstance.post(`${API_BASE}/flashcard-progress/${id}/review/`, { is_correct: isCorrect });
-    return res.data;
+    return unwrap(res.data);
   },
   bulkCreateProgress: async (deckId) => {
     const res = await axiosInstance.post(`${API_BASE}/flashcard-progress/bulk_create_progress/`, { deck_id: deckId });
+    return unwrap(res.data);
+  },
+
+  // ── Classroom / LMS ─────────────────────────────────
+  getClassroomDashboard: async () => {
+    const res = await axiosInstance.get('/classroom/dashboard/');
+    return unwrap(res.data);
+  },
+  getStudents: async (params = {}) => {
+    const res = await axiosInstance.get('/students/', { params: { page_size: 100, ...params } });
     return res.data;
+  },
+  getStudent: async (id) => {
+    const res = await axiosInstance.get(`/students/${id}/`);
+    return res.data;
+  },
+  createStudent: async (data) => {
+    const res = await axiosInstance.post('/students/', data);
+    return unwrap(res.data);
+  },
+  approveStudent: async (id) => {
+    const res = await axiosInstance.post(`/students/${id}/approve/`);
+    return unwrap(res.data);
+  },
+  rejectStudent: async (id) => {
+    const res = await axiosInstance.post(`/students/${id}/reject/`);
+    return unwrap(res.data);
+  },
+  getCourses: async (params = {}) => {
+    const res = await axiosInstance.get('/courses/', { params: { page_size: 100, ...params } });
+    return res.data;
+  },
+  getCourse: async (id) => {
+    const res = await axiosInstance.get(`/courses/${id}/`);
+    return res.data;
+  },
+  createCourse: async (data) => {
+    const res = await axiosInstance.post('/courses/', data);
+    return res.data;
+  },
+  updateCourse: async (id, data) => {
+    const res = await axiosInstance.patch(`/courses/${id}/`, data);
+    return res.data;
+  },
+  deleteCourse: async (id) => {
+    const res = await axiosInstance.delete(`/courses/${id}/`);
+    return res.data;
+  },
+  getClassGroups: async (params = {}) => {
+    const res = await axiosInstance.get('/class-groups/', { params: { page_size: 100, ...params } });
+    return res.data;
+  },
+  getClassGroup: async (id) => {
+    const res = await axiosInstance.get(`/class-groups/${id}/`);
+    return res.data;
+  },
+  createClassGroup: async (data) => {
+    const res = await axiosInstance.post('/class-groups/', data);
+    return res.data;
+  },
+  enrollStudent: async (groupId, studentId) => {
+    const res = await axiosInstance.post(`/class-groups/${groupId}/enroll/`, { student_id: studentId });
+    return unwrap(res.data);
+  },
+  enrollStudents: async (groupId, studentIds) => {
+    const res = await axiosInstance.post(`/class-groups/${groupId}/enroll/`, { student_ids: studentIds });
+    return unwrap(res.data);
+  },
+  unenrollStudent: async (groupId, studentId) => {
+    const res = await axiosInstance.post(`/class-groups/${groupId}/unenroll/`, { student_id: studentId });
+    return unwrap(res.data);
+  },
+  getSessions: async (params = {}) => {
+    const res = await axiosInstance.get('/sessions/', { params: { page_size: 100, ...params } });
+    return res.data;
+  },
+  getSession: async (id) => {
+    const res = await axiosInstance.get(`/sessions/${id}/`);
+    return res.data;
+  },
+  createSession: async (data) => {
+    const res = await axiosInstance.post('/sessions/', data);
+    return res.data;
+  },
+  updateSession: async (id, data) => {
+    const res = await axiosInstance.patch(`/sessions/${id}/`, data);
+    return res.data;
+  },
+  deleteSession: async (id) => {
+    const res = await axiosInstance.delete(`/sessions/${id}/`);
+    return res.data;
+  },
+  markAttendance: async (sessionId, payload) => {
+    const res = await axiosInstance.post(`/sessions/${sessionId}/attendance/`, payload);
+    return unwrap(res.data);
   },
 };

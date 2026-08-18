@@ -104,8 +104,8 @@ class FlashcardAPITest(TestCase):
             format='json',
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        progress_id = response.data[0]['id']
+        self.assertEqual(len(response.data['data']), 1)
+        progress_id = response.data['data'][0]['id']
 
         review = self.client.post(
             f'/api/flashcard-progress/{progress_id}/review/',
@@ -113,14 +113,14 @@ class FlashcardAPITest(TestCase):
             format='json',
         )
         self.assertEqual(review.status_code, status.HTTP_200_OK)
-        self.assertEqual(review.data['mastery_level'], 1)
-        self.assertEqual(review.data['correct_count'], 1)
-        self.assertEqual(review.data['accuracy'], 100.0)
+        self.assertEqual(review.data['data']['mastery_level'], 1)
+        self.assertEqual(review.data['data']['correct_count'], 1)
+        self.assertEqual(review.data['data']['accuracy'], 100.0)
 
         stats = self.client.get('/api/flashcard-progress/statistics/')
         self.assertEqual(stats.status_code, status.HTTP_200_OK)
-        self.assertEqual(stats.data['total_cards'], 1)
-        self.assertEqual(stats.data['learning'], 1)
+        self.assertEqual(stats.data['data']['total_cards'], 1)
+        self.assertEqual(stats.data['data']['learning'], 1)
 
         due = self.client.get('/api/flashcard-progress/due_for_review/')
         self.assertEqual(due.status_code, status.HTTP_200_OK)

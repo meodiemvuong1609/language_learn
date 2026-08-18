@@ -6,6 +6,7 @@ from django.db.models import Q, Count, Avg
 from django.utils import timezone
 from datetime import timedelta
 from common.mixins import StandardResultsSetPagination
+from general.general import convert_response
 from .models import FlashcardDeck, Flashcard, UserFlashcardProgress
 from .serializers import (
     FlashcardDeckSerializer, FlashcardDeckDetailSerializer,
@@ -44,7 +45,13 @@ class FlashcardDeckViewSet(viewsets.ModelViewSet):
         cards_data = request.data.get('cards', [])
 
         if not cards_data:
-            return Response({'error': 'cards array is required'}, status=400)
+            return Response(
+                convert_response(
+                    message='cards array is required',
+                    status_code=status.HTTP_400_BAD_REQUEST
+                ),
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         cards = []
         for idx, card_data in enumerate(cards_data):
@@ -59,7 +66,13 @@ class FlashcardDeckViewSet(viewsets.ModelViewSet):
             ))
 
         Flashcard.objects.bulk_create(cards)
-        return Response({'status': f'{len(cards)} cards added'})
+        return Response(
+            convert_response(
+                message=f'{len(cards)} cards added',
+                status_code=status.HTTP_200_OK
+            ),
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=True, methods=['DELETE'])
     def remove_cards(self, request, pk=None):
@@ -68,10 +81,22 @@ class FlashcardDeckViewSet(viewsets.ModelViewSet):
         card_ids = request.data.get('card_ids', [])
 
         if not card_ids:
-            return Response({'error': 'card_ids is required'}, status=400)
+            return Response(
+                convert_response(
+                    message='card_ids is required',
+                    status_code=status.HTTP_400_BAD_REQUEST
+                ),
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         deleted_count, _ = Flashcard.objects.filter(deck=deck, id__in=card_ids).delete()
-        return Response({'status': f'{deleted_count} cards removed'})
+        return Response(
+            convert_response(
+                message=f'{deleted_count} cards removed',
+                status_code=status.HTTP_200_OK
+            ),
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=False, methods=['GET'])
     def my_decks(self, request):
@@ -163,15 +188,22 @@ class UserFlashcardProgressViewSet(viewsets.ModelViewSet):
         avg_mastery = queryset.aggregate(avg=Avg('mastery_level'))['avg'] or 0
         total_reviews = queryset.aggregate(total=Count('id'))['total'] or 0
 
-        return Response({
-            'total_cards': total_cards,
-            'mastered': mastered,
-            'learning': learning,
-            'new_cards': new_cards,
-            'due_for_review': due_count,
-            'average_mastery': round(avg_mastery, 2),
-            'total_reviews': total_reviews,
-        })
+        return Response(
+            convert_response(
+                message='Statistics retrieved successfully',
+                status_code=status.HTTP_200_OK,
+                data={
+                    'total_cards': total_cards,
+                    'mastered': mastered,
+                    'learning': learning,
+                    'new_cards': new_cards,
+                    'due_for_review': due_count,
+                    'average_mastery': round(avg_mastery, 2),
+                    'total_reviews': total_reviews,
+                }
+            ),
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=True, methods=['POST'])
     def review(self, request, pk=None):
@@ -193,14 +225,27 @@ class UserFlashcardProgressViewSet(viewsets.ModelViewSet):
         progress.save()
 
         serializer = self.get_serializer(progress)
-        return Response(serializer.data)
+        return Response(
+            convert_response(
+                message='Review recorded successfully',
+                status_code=status.HTTP_200_OK,
+                data=serializer.data
+            ),
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=False, methods=['POST'])
     def bulk_create_progress(self, request):
         """Create progress entries for all cards in a deck"""
         deck_id = request.data.get('deck_id')
         if not deck_id:
-            return Response({'error': 'deck_id is required'}, status=400)
+            return Response(
+                convert_response(
+                    message='deck_id is required',
+                    status_code=status.HTTP_400_BAD_REQUEST
+                ),
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         cards = Flashcard.objects.filter(deck_id=deck_id)
         user = request.user
@@ -215,4 +260,12 @@ class UserFlashcardProgressViewSet(viewsets.ModelViewSet):
             created.append(progress)
 
         serializer = self.get_serializer(created, many=True)
-        return Response(serializer.data)
+        return Response(
+            convert_response(
+                message='Progress created successfully',
+                status_code=status.HTTP_200_OK,
+                data=serializer.data,
+                count=len(serializer.data)
+            ),
+            status=status.HTTP_200_OK
+        )

@@ -71,30 +71,23 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center gradient-login p-4 relative overflow-hidden">
-      {/* Decorative circles */}
-      <div className="absolute top-[-10%] right-[-5%] w-72 h-72 bg-white/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-[-15%] left-[-10%] w-96 h-96 bg-secondary-600/20 rounded-full blur-3xl" />
-      <div className="absolute top-[40%] left-[20%] w-48 h-48 bg-primary-400/10 rounded-full blur-2xl" />
-
+    <div className="min-h-screen flex items-center justify-center auth-canvas p-4 relative overflow-hidden">
       <div className="w-full max-w-md animate-fade-in-up relative z-10">
-        {/* Logo / Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl mb-4 backdrop-blur-sm">
-            <span className="text-3xl">🌍</span>
-          </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">
-            LanguageLearn
+          <p className="inline-block font-plex text-[11px] tracking-[0.14em] uppercase border border-ink text-ink px-2 py-1 mb-4" style={{ boxShadow: '2px 2px 0 var(--ink)' }}>
+            cue
+          </p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Ngọc Thảo IELTS
           </h1>
-          <p className="text-white/70 mt-2 text-sm">
-            Nền tảng học tiếng Anh toàn diện
+          <p className="mt-2 text-sm" style={{ color: 'var(--muted)' }}>
+            Luyện IELTS online · THPT và sinh viên
           </p>
         </div>
 
-        {/* Login Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-1">Chào mừng trở lại</h2>
-          <p className="text-sm text-gray-500 mb-6">Đăng nhập để tiếp tục học tập</p>
+        <div className="rounded-none border p-6 md:p-8" style={{ background: 'var(--surface-primary)', borderColor: 'var(--line)' }}>
+          <h2 className="text-2xl font-bold mb-1">Chào mừng trở lại</h2>
+          <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>Đăng nhập để tiếp tục luyện thi</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Username */}
@@ -166,20 +159,21 @@ export default function LoginForm() {
           {/* Register Link */}
           <p className="text-center text-sm text-gray-500">
             Chưa có tài khoản?{' '}
-            <Link href="/register" className="font-semibold text-primary-600 hover:text-primary-700 transition-colors">
+            <Link href="/register" className="font-semibold text-moss hover:underline">
               Đăng ký ngay
             </Link>
           </p>
           <p className="text-center text-sm text-gray-500 mt-3">
-            <Link href="/forgot-password" className="text-primary-600 hover:underline">
+            <Link href="/forgot-password" className="text-moss hover:underline">
               Quên mật khẩu?
             </Link>
           </p>
         </div>
 
         {/* Footer text */}
-        <p className="text-center text-white/50 text-xs mt-6">
-          © {new Date().getFullYear()} LanguageLearn. All rights reserved.
+        <p className="text-center text-xs mt-6" style={{ color: 'var(--muted)' }}>
+          <Link href="/" className="hover:underline">← Trang giới thiệu</Link>
+          {' · '}© {new Date().getFullYear()} Ngọc Thảo IELTS
         </p>
       </div>
     </div>

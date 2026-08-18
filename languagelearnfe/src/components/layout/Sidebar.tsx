@@ -1,31 +1,44 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useDispatch } from 'react-redux'
-import { logout } from '@/store/authSlice'
-import { api } from '@/services/api'
+import { useSelector } from 'react-redux'
 import { Avatar } from '@/components/ui'
+import { isTeacher } from '@/lib/lms'
+import { useLogout } from '@/lib/useLogout'
 
-const ITEMS = [
-  { href: '/dashboard', label: 'Dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
-  { href: '/vocabulary', label: 'Từ vựng', icon: 'M12 6.253v13' },
-  { href: '/listening', label: 'Nghe', icon: 'M9 19V6l12-3v13' },
-  { href: '/speaking', label: 'Nói', icon: 'M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z' },
-  { href: '/flashcard', label: 'Flashcard', icon: 'M19 11H5' },
-  { href: '/sentence', label: 'Ngữ pháp', icon: 'M11 5H6a2 2 0 00-2 2v11' },
-  { href: '/quizzes', label: 'Quiz', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2' },
-  { href: '/reading', label: 'Đọc hiểu', icon: 'M12 6.253v13' },
-]
+const ICONS = {
+  dashboard: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+  schedule: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+  courses: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
+  students: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
+  classes: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1',
+}
+
+function navItems(user?: { role?: string; is_teacher?: boolean } | null) {
+  const items = [
+    { href: '/dashboard', label: 'Tổng quan', icon: ICONS.dashboard },
+    { href: '/schedule', label: 'Lịch học', icon: ICONS.schedule },
+    { href: '/classes', label: 'Lớp học', icon: ICONS.classes },
+    { href: '/courses', label: 'Khóa học', icon: ICONS.courses },
+  ]
+  if (isTeacher(user)) {
+    items.push({ href: '/students', label: 'Học sinh', icon: ICONS.students })
+  }
+  return items
+}
 
 export function Sidebar() {
   const router = useRouter()
-  const dispatch = useDispatch()
+  const handleLogout = useLogout()
+  const user = useSelector((state: { auth?: { user?: { full_name?: string; username?: string; role?: string; is_teacher?: boolean; status?: string } } }) => state.auth?.user)
+  const displayName = user?.full_name || user?.username || 'Học viên'
+  const roleLabel = isTeacher(user) ? 'Cô giáo' : user?.status === 'pending' ? 'Chờ duyệt' : 'Học viên'
 
   return (
     <aside style={{
       position: 'fixed', top: 0, left: 0, bottom: 0, width: '260px', zIndex: 40,
-      background: 'var(--surface-primary, #fff)',
-      borderRight: '1px solid var(--gray-200, #e2e8f0)',
+      background: 'var(--cue, #fff6e8)',
+      borderRight: '1px solid var(--line, #d8cebf)',
       display: 'flex', flexDirection: 'column',
       padding: '20px 12px',
     }}>
@@ -34,19 +47,25 @@ export function Sidebar() {
         padding: '0 12px', marginBottom: '24px', textDecoration: 'none',
       }}>
         <div style={{
-          width: '36px', height: '36px', borderRadius: '10px',
-          background: 'linear-gradient(135deg, var(--primary-500, #3B82F6), #7c3aed)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: '#fff', fontSize: '18px',
-        }}>🌍</div>
+          fontFamily: 'IBM Plex Mono, ui-monospace, monospace',
+          fontSize: '11px',
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          background: 'var(--cue, #fff6e8)',
+          border: '1px solid var(--ink, #152238)',
+          color: 'var(--ink, #152238)',
+          padding: '6px 8px',
+          boxShadow: '2px 2px 0 var(--ink, #152238)',
+        }}>cue</div>
         <span style={{
-          fontSize: '16px', fontWeight: 700, color: 'var(--gray-900, #0f172a)',
-          letterSpacing: '-0.025em',
-        }}>LanguageLearn</span>
+          fontFamily: 'Literata, Georgia, serif',
+          fontSize: '15px', fontWeight: 700, color: 'var(--ink, #152238)',
+          letterSpacing: '-0.02em', lineHeight: 1.2,
+        }}>Ngọc Thảo IELTS</span>
       </Link>
 
       <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-        {ITEMS.map((item) => {
+        {navItems(user).map((item) => {
           const active = router.pathname === item.href || router.pathname.startsWith(item.href + '/')
           return (
             <Link
@@ -54,11 +73,12 @@ export function Sidebar() {
               href={item.href}
               style={{
                 display: 'flex', alignItems: 'center', gap: '12px',
-                padding: '10px 12px', borderRadius: '10px',
+                padding: '10px 12px',
                 textDecoration: 'none',
                 fontSize: '14px', fontWeight: active ? 600 : 400,
-                color: active ? 'var(--primary-600, #2563EB)' : 'var(--gray-600, #475569)',
-                background: active ? 'var(--primary-50, #EFF6FF)' : 'transparent',
+                color: active ? 'var(--stamp, #b42318)' : 'var(--muted, #6b645b)',
+                background: active ? 'rgba(180, 35, 24, 0.08)' : 'transparent',
+                borderLeft: active ? '2px solid var(--stamp, #b42318)' : '2px solid transparent',
                 transition: 'all 150ms ease',
               }}
             >
@@ -72,31 +92,27 @@ export function Sidebar() {
       </nav>
 
       <div style={{
-        borderTop: '1px solid var(--gray-200, #e2e8f0)',
+        borderTop: '1px solid var(--line, #d8cebf)',
         paddingTop: '12px', marginTop: 'auto',
       }}>
         <Link href="/profile" style={{
           display: 'flex', alignItems: 'center', gap: '10px',
-          padding: '8px 12px', borderRadius: '10px',
+          padding: '8px 12px',
           textDecoration: 'none', marginBottom: '4px',
         }}>
-          <Avatar name="User" size="sm" />
+          <Avatar name={displayName} size="sm" />
           <div>
-            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--gray-900, #0f172a)' }}>User</div>
-            <div style={{ fontSize: '11px', color: 'var(--gray-500, #64748b)' }}>Xem hồ sơ</div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--ink, #152238)' }}>{displayName}</div>
+            <div style={{ fontSize: '11px', color: 'var(--muted, #6b645b)' }}>{roleLabel}</div>
           </div>
         </Link>
         <button
-          onClick={async () => {
-            try { await api.logout() } catch { /* still clear local */ }
-            dispatch(logout())
-            router.push('/login')
-          }}
+          onClick={handleLogout}
           style={{
             display: 'flex', alignItems: 'center', gap: '10px',
-            width: '100%', padding: '8px 12px', borderRadius: '10px',
+            width: '100%', padding: '8px 12px',
             background: 'transparent', border: 'none', cursor: 'pointer',
-            fontSize: '13px', color: 'var(--error-500, #EF4444)',
+            fontSize: '13px', color: 'var(--stamp, #b42318)',
             transition: 'background 150ms',
           }}
         >

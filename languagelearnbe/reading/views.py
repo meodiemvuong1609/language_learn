@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.utils import timezone
 from common.mixins import StandardResultsSetPagination
 from common.grading import answers_match
+from general.general import convert_response
 from .models import ReadingLesson, ReadingParagraph, ReadingComprehension, UserReadingProgress
 from .serializers import (
     ReadingLessonSerializer, ReadingParagraphSerializer,
@@ -52,12 +53,19 @@ class ReadingLessonViewSet(viewsets.ModelViewSet):
         progress.completed = True
         progress.completed_at = timezone.now()
         progress.save()
-        return Response({
-            'correct': correct,
-            'total': len(questions),
-            'percentage': percentage,
-            'results': results,
-        })
+        return Response(
+            convert_response(
+                message='Comprehension submitted successfully',
+                status_code=status.HTTP_200_OK,
+                data={
+                    'correct': correct,
+                    'total': len(questions),
+                    'percentage': percentage,
+                    'results': results,
+                }
+            ),
+            status=status.HTTP_200_OK
+        )
 
 
 class ReadingParagraphViewSet(viewsets.ModelViewSet):

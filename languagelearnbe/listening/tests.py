@@ -42,12 +42,20 @@ class AudioLessonViewSetTest(TestCase):
     def test_create_lesson_as_user(self):
         self.client.force_authenticate(user=self.user)
         data = {
-            'title': 'New Lesson', 'description': 'Desc',
-            'duration': '00:01:00', 'level': self.level.id, 'order': 2,
-            'topics': [self.topic.id]
+            'title': 'New Lesson',
+            'description': 'Desc',
+            'transcript': 'Hello',
+            'duration': '00:01:00',
+            'level': self.level.id,
+            'order': 2,
+            'topics': [self.topic.id],
         }
         response = self.client.post('/api/audio-lessons/', data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED,
+            response.data,
+        )
 
     def test_filter_by_level(self):
         response = self.client.get(f'/api/audio-lessons/?level={self.level.id}')
@@ -97,7 +105,7 @@ class ListeningExerciseViewSetTest(TestCase):
             {'answer': 'hello', 'time_taken': 10}, format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data['is_correct'])
+        self.assertTrue(response.data['data']['is_correct'])
 
     def test_submit_answer_incorrect(self):
         self.client.force_authenticate(user=self.user)
@@ -106,7 +114,7 @@ class ListeningExerciseViewSetTest(TestCase):
             {'answer': 'world', 'time_taken': 15}, format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(response.data['is_correct'])
+        self.assertFalse(response.data['data']['is_correct'])
 
     def test_submit_answer_missing_fields(self):
         self.client.force_authenticate(user=self.user)
@@ -140,7 +148,7 @@ class UserListeningProgressViewSetTest(TestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get('/api/listening-progress/statistics/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        data = response.data
+        data = response.data['data']
         self.assertIn('total_lessons', data)
         self.assertIn('accuracy', data)
 

@@ -8,6 +8,7 @@ from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import status
 from account.models import Account
+from general.general import convert_response
 
 
 @api_view(['POST'])
@@ -20,7 +21,7 @@ def forgot_password_view(request):
     email = request.data.get('email')
     if not email:
         return Response(
-            {'error': 'Email là bắt buộc'},
+            convert_response('Email is required', status.HTTP_400_BAD_REQUEST),
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -28,7 +29,7 @@ def forgot_password_view(request):
 
     if not user:
         return Response(
-            {'message': 'Nếu email tồn tại, bạn sẽ nhận được hướng dẫn đặt lại mật khẩu'},
+            convert_response('If the email exists, you will receive a password reset link', status.HTTP_200_OK),
             status=status.HTTP_200_OK
         )
 
@@ -48,9 +49,7 @@ def forgot_password_view(request):
         pass
 
     return Response(
-        {
-            'message': 'Nếu email tồn tại, bạn sẽ nhận được hướng dẫn đặt lại mật khẩu',
-        },
+        convert_response('If the email exists, you will receive a password reset link', status.HTTP_200_OK),
         status=status.HTTP_200_OK
     )
 
@@ -68,13 +67,13 @@ def reset_password_view(request):
 
     if not all([uid, token, new_password]):
         return Response(
-            {'error': 'uid, token và new_password là bắt buộc'},
+            convert_response('uid, token and new_password are required', status.HTTP_400_BAD_REQUEST),
             status=status.HTTP_400_BAD_REQUEST
         )
 
     if len(new_password) < 8:
         return Response(
-            {'error': 'Mật khẩu phải có ít nhất 8 ký tự'},
+            convert_response('Password must be at least 8 characters', status.HTTP_400_BAD_REQUEST),
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -83,13 +82,13 @@ def reset_password_view(request):
         user = Account.objects.get(pk=uid_int)
     except (TypeError, ValueError, OverflowError, Account.DoesNotExist):
         return Response(
-            {'error': 'Link đặt lại mật khẩu không hợp lệ'},
+            convert_response('Invalid password reset link', status.HTTP_400_BAD_REQUEST),
             status=status.HTTP_400_BAD_REQUEST
         )
 
     if not default_token_generator.check_token(user, token):
         return Response(
-            {'error': 'Link đặt lại mật khẩu đã hết hạn'},
+            convert_response('Password reset link has expired', status.HTTP_400_BAD_REQUEST),
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -97,6 +96,6 @@ def reset_password_view(request):
     user.save()
 
     return Response(
-        {'message': 'Đặt lại mật khẩu thành công'},
+        convert_response('Password reset successful', status.HTTP_200_OK),
         status=status.HTTP_200_OK
     )

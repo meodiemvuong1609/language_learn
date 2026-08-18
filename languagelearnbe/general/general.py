@@ -1,5 +1,5 @@
 def convert_response(message, status_code, data=None, count=None):
-    """Normalize API response bodies used by auth views."""
+    """Build a standard {message, code, data?, count?} API envelope."""
     response = {
         "message": message,
         "code": status_code,

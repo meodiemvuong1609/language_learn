@@ -142,14 +142,18 @@ class TopicViewSetTest(TestCase):
     def test_root_topics_action(self):
         response = self.client.get('/api/topics/root_topics/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['name'], 'Technology')
+        self.assertEqual(response.data['code'], status.HTTP_200_OK)
+        self.assertEqual(len(response.data['data']), 1)
+        self.assertEqual(response.data['data'][0]['name'], 'Technology')
+        self.assertEqual(response.data['count'], 1)
 
     def test_subtopics_action(self):
         response = self.client.get(f'/api/topics/{self.parent_topic.id}/subtopics/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['name'], 'AI')
+        self.assertEqual(response.data['code'], status.HTTP_200_OK)
+        self.assertEqual(len(response.data['data']), 1)
+        self.assertEqual(response.data['data'][0]['name'], 'AI')
+        self.assertEqual(response.data['count'], 1)
 
     def test_create_topic_as_admin(self):
         self.client.force_authenticate(user=self.admin)
