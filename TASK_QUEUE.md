@@ -8,6 +8,46 @@ This queue **supersedes** the older `docs/archive/IMPROVEMENTS.md` and `docs/arc
 
 ---
 
+## Done in Autonomous Loop #4
+
+| ID | Pri | Area | Description | Status |
+|---|---|---|---|---|
+| BE-05b | P2 | Backend | Remove unused `SpeakingPractice` model + migration | `DONE` |
+| MOB-07 | P1 | Mobile | Speaking: `expo-av` record/play + persist duration; listening audio play | `DONE` |
+| FE-08 | P2 | Frontend | Consolidate EmptyState/ErrorState/Toast/StatCard; remove unused Header; flashcard `alert()` → Toast | `DONE` |
+| DES-01 | P2 | All | Unify mobile brand to primary blue `#2563EB` | `DONE` |
+
+---
+
+## Done in Autonomous Loop #3
+
+| ID | Pri | Area | Description | Status |
+|---|---|---|---|---|
+| BE-08 | P1 | Backend | Flashcard `card_count` used `flashcard_set` (wrong related_name) and clashed with queryset annotate → 500 on deck list/actions. | `DONE` |
+| BE-06 | P2 | Backend | Add flashcard API tests (deck CRUD, add/remove cards, progress/review/stats). | `DONE` |
+| BE-07 (partial) | P2 | Backend | Explicit fields on vocabulary list/item/user serializers (drop `__all__`); flashcard querysets `select_related`. | `DONE` |
+| MOB-05 | P2 | Mobile | Login loads `/auth/me` into Redux; profile shows real user; token in `expo-secure-store`; API errors use `message`. | `DONE` |
+| MOB-06 | P1 | Mobile | Vocabulary list unwraps paginated `{results}` so `items.filter` no longer crashes. | `DONE` |
+| FE-07 | P2 | Frontend | Register redirects to `/dashboard`; dashboard does not spin forever without a token. | `DONE` |
+
+---
+
+## Done in Autonomous Loop #2
+
+| ID | Pri | Area | Description | Status |
+|---|---|---|---|---|
+| FE-06 | P1 | Frontend | Persist auth token cookie inside `login` thunk so register auto-login is not bounced by `ProtectedRoute`. | `DONE` |
+| FE-05 (partial) | P2 | Frontend | Add `/` → `/home` redirect; 404 "home" link no longer 404s. | `DONE` |
+| BE-02 | P1 | Backend | Pin `djangorestframework==3.15.2` (Django 5.0 compatible). | `DONE` |
+| BE-03 | P1 | Backend | Read `SECRET_KEY` or `DJANGO_SECRET_KEY`; refuse insecure fallback when `DEBUG=False`. | `DONE` |
+| BE-04 | P1 | Backend | Docker: `CMD` on `0.0.0.0`, Postgres service, matching WORKDIR volume. | `DONE` |
+| SEC-01 | P1 | Backend | Strip leftover VietQR/OTP secrets from `general/general.py`; keep `convert_response`. | `DONE` |
+| MOB-01 | P1 | Mobile | Restore default Tailwind palette (gray/red) + custom tokens via `extend`; include `Components/`. | `DONE` |
+| MOB-02 | P1 | Mobile | NativeWind v4: `metro.config.js` + `global.css`; pin `tailwindcss@3.4.17`. | `DONE` |
+| MOB-04 | P2 | Mobile | Register missing navigation routes as placeholder screens (no crash). | `DONE` |
+
+---
+
 ## Done in Autonomous Loop #1
 
 | ID | Pri | Area | Description | Status |
@@ -19,46 +59,38 @@ This queue **supersedes** the older `docs/archive/IMPROVEMENTS.md` and `docs/arc
 | DOC-01 | P2 | Docs | Create `PROJECT_STATUS.md` + `TASK_QUEUE.md`; correct root `README.md`; archive stale planning docs. | `DONE` |
 | BE-01 | P1 | Backend | Fix `common/signals.py` to read the real thread-local via `account.middleware.get_current_user()`; scope to `BaseModel`; register signals in `CommonConfig.ready()` (fixes circular import). Added 4 regression tests. | `DONE` |
 
-**Acceptance for the loop:** FE `next lint` clean (warnings only) + `next build` 22/22 pages + `tsc --noEmit` clean; BE `manage.py check` clean + `CreatedUpdatedBySignalTest` (4 tests) pass. ✅
+**Acceptance for the loop:** FE `next lint` clean (warnings only) + `next build` 23/23 pages; BE `manage.py check` clean + `CreatedUpdatedBySignalTest` (4 tests) pass. ✅
 
 ---
 
 ## Open — P1 (High)
 
-| ID | Area | Description | Acceptance Criteria | Status |
-|---|---|---|---|---|
-| BE-02 | Backend | Resolve `django==5.0` / `djangorestframework==3.14.0` incompatibility (bump DRF to ≥ 3.15). NOTE: the local venv currently runs DRF 3.14 with Django 5.0 and `manage.py check` passes, but `requirements.txt` should still pin a compatible DRF for reproducible installs. | `pip install -r requirements.txt` + `manage.py check` + test suite pass on Django 5.0. | `TODO` |
-| BE-03 | Backend | Fix `SECRET_KEY` env mismatch (`.env` uses `DJANGO_SECRET_KEY`, settings reads `SECRET_KEY`). | With DEBUG=False and an env-provided key, no insecure fallback key is used. | `TODO` |
-| BE-04 | Backend/DevOps | Make Docker runnable: add `CMD` (gunicorn), add a `db` Postgres service to compose, bind `0.0.0.0`, align WORKDIR/volume. | `docker compose up` serves the API on the host and connects to Postgres. | `TODO` |
-| MOB-01 | Mobile | Fix Tailwind/NativeWind color palette: screens use undefined `red-*` / `gray-50..900`. Define the used tokens or migrate screens to existing tokens. | App renders with intended brand colors; no undefined-class fallbacks. | `TODO` |
-| MOB-02 | Mobile | Complete NativeWind v4 setup: add `metro.config.js` with `withNativeWind` and a global CSS `@tailwind` import. | `className` styles compile and apply on device/simulator. | `TODO` |
-| SEC-01 | Backend | Remove hardcoded third-party credentials in `general/general.py` (leftover VietQR/OTP code) and delete unused code. Rotate any exposed keys. | No secrets in tracked source; unused module removed; tests pass. | `TODO` |
+_None currently._
 
 ## Open — P2 (Medium)
 
 | ID | Area | Description | Acceptance Criteria | Status |
 |---|---|---|---|---|
-| MOB-03 | Mobile | Wire `Sentence`/`Listening`/`Speaking`/`Review`/`Test` screens to their existing services/slices; replace mock data. | Each screen loads live data with loading/error/empty states. | `TODO` |
-| MOB-04 | Mobile | Register the navigation routes screens link to (`*Detail`, `*Practice`, `ForgotPassword`, etc.) or remove the dead navigation calls. | No "route not found" runtime errors. | `TODO` |
-| MOB-05 | Mobile | Populate Redux `user` on login/getMe; show real profile data; move token to `expo-secure-store`. | Profile shows the logged-in user; token no longer in plaintext AsyncStorage. | `TODO` |
-| BE-05 | Backend | Remove dead code: `lesson` app (or wire it), `speaking.SpeakingPractice`, unused `vocabulary/urls.py` & `flashcard/urls.py`. | Removed/wired with tests still green. | `TODO` |
-| BE-06 | Backend | Add `flashcard` test coverage. | Tests cover deck/card/progress + custom actions. | `TODO` |
-| BE-07 | Backend | Audit serializers using `fields = '__all__'` (esp. `AccountSerializer` exposing sensitive fields); add `select_related`/`prefetch_related` to avoid N+1. | Explicit fields on sensitive serializers; key list endpoints avoid N+1. | `TODO` |
-| TEST-01 | Frontend | Add a test framework (Vitest/Jest + RTL) and a `typecheck` script; a few smoke tests. | `npm test` and `npm run typecheck` run in CI. | `TODO` |
-| TEST-02 | Mobile | Add Jest + `@testing-library/react-native`; smoke tests for services/slices. | `yarn test` runs. | `TODO` |
-| FE-05 | Frontend | Consolidate duplicate components (`StatCard`/`EmptyState`/`ErrorState`/`Toast` `.js` vs `ui/*.tsx`); remove dead `Header.js`/unused `ui/*`; add a `/` route or redirect to `/home`. | One implementation per component; `/` resolves. | `TODO` |
-| CI-01 | DevOps | Add CI (GitHub Actions): BE (Postgres service + tests), FE (lint+build), Mobile (lint). | CI runs on PRs. | `TODO` |
+| MOB-03 | Mobile | Wire skill screens to APIs | Live data + loading/error/empty | `DONE` |
+| BE-05 | Backend | Dead code cleanup (urls, firebase); lesson kept for seed only | Tests green | `DONE` |
+| TEST-01 | Frontend | typecheck + smoke tests | `npm test` / `npm run typecheck` | `DONE` |
+| TEST-02 | Mobile | Smoke tests | `npm test` | `DONE` |
+| FE-05 | Frontend | Sentence in sidebar; list→detail links | Navigation works | `DONE` |
+| CI-01 | DevOps | GitHub Actions | CI on PRs | `DONE` |
 
 ## Open — P3 (Low / Nice-to-have)
 
 | ID | Area | Description | Status |
 |---|---|---|---|
-| P3-01 | Frontend | Replace `alert()` with the existing Toast system across pages. | `TODO` |
+| P3-01 | Frontend | Replace `alert()` with Toast | `DONE` |
+| AUTH-02 | All | Forgot/reset password pages (web + mobile forgot) | `DONE` |
 | P3-02 | Frontend | Move React 19 RC → stable once released for the toolchain. | `TODO` |
-| P3-03 | All | Dark mode (persist `UserPreference.dark_mode`). | `TODO` |
+| P3-03 | All | Dark mode (persist `UserPreference.dark_mode`). | `DONE` |
 | P3-04 | All | i18n (vi default, en). | `TODO` |
 | P3-05 | Backend | Real speaking AI scoring (Whisper/Google Speech). | `TODO` |
 | P3-06 | Frontend | PWA support; custom audio player with waveform. | `TODO` |
+
+**Stop condition:** further feature work is P3-only (dark mode, i18n, Whisper, PWA). Core 6-skill + SRS MVP is complete.
 
 ---
 

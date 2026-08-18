@@ -36,11 +36,11 @@ Design system chung cho cả **Mobile App** và **Web App** của LanguageLearn.
 ### Accent / Brand Color (Mobile)
 | Token | Class | Hex | Mô tả |
 |-------|-------|-----|-------|
-| `brand-red-100` | custom | `#FEE2E2` | Light red background |
-| `brand-red-500` | custom | `#EF4444` | **Brand primary (mobile)** |
-| `brand-red-dark-5` | custom | `#DC2626` | Darker red (buttons, headers) |
+| `primary` | `blue-dark-5` / `primary` | `#2563EB` | **Brand primary (web + mobile)** |
+| `danger` | `red-600` | `#DC2626` | Logout, hành động hủy |
+| `error` | `red-500` | `#EF4444` | Lỗi, “Chưa nhớ” |
 
-> ⚠️ **Lưu ý**: Mobile app hiện dùng `red` (`#EF4444`) làm primary brand color, trong khi Web app dùng `blue` (`#2563EB`). Cần thống nhất.
+Mobile dùng cùng primary blue với web. Đỏ chỉ còn cho error/danger.
 
 ### Neutrals
 | Token | Tailwind Class | Hex | Mô tả |
@@ -60,7 +60,7 @@ Design system chung cho cả **Mobile App** và **Web App** của LanguageLearn.
 |------|-----------|----------|
 | `gradient-primary` | blue-500 → purple-600 | `bg-gradient-to-r from-blue-500 to-purple-600` |
 | `gradient-hero` | blue-50 → purple-100 | `bg-gradient-to-r from-blue-50 to-purple-100` |
-| `gradient-brand-mobile` | brand-red | Red header bg |
+| `gradient-brand-mobile` | primary blue | Header `bg-blue-dark-5` |
 
 ---
 
@@ -231,7 +231,7 @@ Structure:
 ### Icon Colors
 - Default: `gray-600` / `text-gray-600`
 - On primary bg: `white`
-- Brand accent: `red-500` (mobile) / `blue-600` (web)
+- Brand accent: `blue-600` (web + mobile)
 - Inside colored badge: white on colored bg
 
 ---
