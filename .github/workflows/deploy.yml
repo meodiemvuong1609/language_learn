@@ -55,7 +55,7 @@ jobs:
           envs: UPDATE_BE,UPDATE_FE
           script: |
             set -euo pipefail
-            APP_DIR="/root/ngocthao-ielts"
+            APP_DIR="/root/language_learn"
 
             echo "==> Sync code"
             cd "$APP_DIR"
